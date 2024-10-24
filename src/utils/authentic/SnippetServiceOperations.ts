@@ -6,9 +6,16 @@ import {CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "../snipp
 import {SnippetOperations} from "../snippetOperations.ts";
 import {PaginatedUsers} from "../users.ts";
 import {useCreateSnippet} from "../../hooks/useCreateSnippet.ts";
+import {fetchFileTypes} from "../../hooks/fetchFileTypes.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
+
+    private readonly getAccessTokenSilently: () => Promise<string>;
+
+    constructor(getAccessTokenSilently: () => Promise<string>) {
+        this.getAccessTokenSilently = getAccessTokenSilently;
+    }
 
     listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
         console.log(page, pageSize, snippetName);
@@ -19,7 +26,8 @@ export class SnippetServiceOperations implements SnippetOperations {
     createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
         const {name, content, language, extension} = createSnippet;
         try {
-            return await useCreateSnippet(name, content, language, extension);
+            const token = await this.getAccessTokenSilently();
+            return await useCreateSnippet(name, content, language, extension, token);
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to create snippet: " + error.message);
@@ -87,8 +95,17 @@ export class SnippetServiceOperations implements SnippetOperations {
         throw new Error("Method not implemented.");
     }
 
-    getFileTypes(): Promise<FileType[]> {
-        throw new Error("Method not implemented.");
+    async getFileTypes(): Promise<FileType[]> {
+        try {
+            const token = await this.getAccessTokenSilently();
+            return await fetchFileTypes(token);
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error("Failed to fetch file types: " + error.message);
+            } else {
+                throw new Error("Failed to fetch file types: An unexpected error occurred");
+            }
+        }
     }
 
     modifyFormatRule(newRules: Rule[]): Promise<Rule[]> {
@@ -100,5 +117,4 @@ export class SnippetServiceOperations implements SnippetOperations {
         console.log(newRules);
         throw new Error("Method not implemented.");
     }
-
 }

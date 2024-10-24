@@ -1,24 +1,29 @@
-import {Snippet} from "../utils/snippet.ts";
+import axios from "axios";
+import { Snippet } from "../utils/snippet.ts";
 
-export const useCreateSnippet = async (name: string, content: string, language: string, extension: string): Promise<Snippet> => {
+export const useCreateSnippet = async (
+    name: string,
+    content: string,
+    language: string,
+    extension: string,
+    token: string
+): Promise<Snippet> => {
     try {
-        const response = await fetch("/snippets", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({name, content, language, extension})
-        });
+        const response = await axios.post(
+            "/snippets",
+            { name, content, language, extension },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
 
-        if (!response.ok) {
-            console.error("Failed to create snippet");
-        }
-
-        const data = await response.json();
-        return data as Snippet;
+        return response.data as Snippet;
     } catch (error) {
-        if (error instanceof Error) {
-            throw new Error(error.message);
+        if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data?.message || error.message);
         } else {
             throw new Error("An unexpected error occurred");
         }

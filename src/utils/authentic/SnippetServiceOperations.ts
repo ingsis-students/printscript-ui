@@ -114,7 +114,7 @@ export class SnippetServiceOperations implements SnippetOperations {
         throw new Error("Method not implemented.");
     }
 
-    modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {
+    async modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {
         const { modifyRules } = useModifyLintingRules();
         try {
             const token = await this.getAccessTokenSilently();

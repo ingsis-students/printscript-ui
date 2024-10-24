@@ -5,7 +5,7 @@ export function useModifyLintingRules() {
     const modifyRules = async (newRules: Rule[], token: string): Promise<Rule[]> => {
         try {
             const response = await axios.post(
-                "/lint/rules",
+                "/  lint/rules",
                 { rules: newRules },
                 {
                     headers: {
@@ -14,7 +14,6 @@ export function useModifyLintingRules() {
                     }
                 }
             );
-
             return response.data as Rule[];
         } catch (error) {
             if (axios.isAxiosError(error)) {

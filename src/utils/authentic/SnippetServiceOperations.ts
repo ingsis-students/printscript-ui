@@ -7,6 +7,7 @@ import {SnippetOperations} from "../snippetOperations.ts";
 import {PaginatedUsers} from "../users.ts";
 import {useCreateSnippet} from "../../hooks/useCreateSnippet.ts";
 import {fetchFileTypes} from "../../hooks/fetchFileTypes.ts";
+import {useModifyLintingRules} from "../../hooks/useModifyLintingRules.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
@@ -114,7 +115,16 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {
-        console.log(newRules);
-        throw new Error("Method not implemented.");
+        const { modifyRules } = useModifyLintingRules();
+        try {
+            const token = await this.getAccessTokenSilently();
+            return await modifyRules(newRules, token);
+        } catch(error) {
+            if (error instanceof Error) {
+                throw new Error("Failed to modify linting rules: " + error.message);
+            } else {
+                throw new Error("Failed to modify linting rules: An unexpected error occurred");
+            }
+        }
     }
 }

@@ -96,12 +96,17 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
                     onChange={(e: SelectChangeEvent<string>) => setLanguage(e.target.value)}
                     sx={{width: '50%'}}
                 >
-                    {
-                        fileTypes?.map(x => (
-                            <MenuItem data-testid={`menu-option-${x.language}`} key={x.language}
-                                      value={x.language}>{capitalize((x.language))}</MenuItem>
+                    {(Array.isArray(fileTypes) && fileTypes.length > 0) ? (
+                        fileTypes.map((x) => (
+                            x && x.language ? (
+                                <MenuItem data-testid={`menu-option-${x.language}`} key={x.language} value={x.language}>
+                                    {capitalize(x.language)}
+                                </MenuItem>
+                            ) : null
                         ))
-                    }
+                    ) : (
+                        <MenuItem disabled>No file types accepted</MenuItem>
+                    )}
                 </Select>
             </Box>
             <InputLabel>Code Snippet</InputLabel>

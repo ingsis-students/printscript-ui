@@ -7,6 +7,7 @@ import {SnippetOperations} from "../snippetOperations.ts";
 import {PaginatedUsers} from "../users.ts";
 import {useCreateSnippet} from "../../hooks/useCreateSnippet.ts";
 import {fetchFileTypes} from "../../hooks/fetchFileTypes.ts";
+import {fetchSnippetById} from "../../hooks/fetchSnippetById.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
@@ -37,9 +38,17 @@ export class SnippetServiceOperations implements SnippetOperations {
         }
     };
 
-    getSnippetById(id: string): Promise<Snippet | undefined> {
-        console.log(id);
-        throw new Error("Method not implemented.");
+    async getSnippetById(id: string): Promise<Snippet | undefined> {
+        try {
+            const token = await this.getAccessTokenSilently();
+            return await fetchSnippetById(id, token);
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error("Failed to fetch snippet: " + error.message);
+            } else {
+                throw new Error("Failed to fetch snippet: An unexpected error occurred");
+            }
+        }
     }
 
     updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<Snippet> {

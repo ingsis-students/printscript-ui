@@ -79,7 +79,7 @@ export const useShareSnippet = () => {
 export const useGetTestCases = () => {
     const snippetOperations = useSnippetsOperations()
 
-    return useQuery<TestCase[] | undefined, Error>(['testCases'], () => snippetOperations.getTestCases(), {});
+    return useQuery<TestCase[] | undefined, Error>(['testCases'], () => snippetOperations.getTestCases("Pa que buildee"), {});
 };
 
 

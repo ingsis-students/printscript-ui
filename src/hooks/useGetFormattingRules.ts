@@ -5,7 +5,7 @@ export function useGetFormattingRules() {
     const getFormattingRules = async (token: string): Promise<Rule[]> => {
         try {
             const response = await axios.get(
-                "/format/rules",
+                "http://localhost:8082/api/snippets/format/rules",
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

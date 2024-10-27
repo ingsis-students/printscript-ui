@@ -5,7 +5,7 @@ export function useGetLintingRules() {
     const getLintingRules = async (token: string): Promise<Rule[]> => {
         try {
             const response = await axios.get(
-                "/lint/rules",
+                "http://localhost:8082/api/snippets/lint/rules",
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

@@ -1,9 +1,11 @@
 import axios from "axios";
 import { FileType } from "../types/FileType";
+axios.defaults.baseURL = "http://localhost:8082/api/languages";
 
 export const fetchFileTypes = async (token: string): Promise<FileType[]> => {
     try {
-        const response = await axios.get("/extensions", {
+        console.log("TOKEN",token);
+        const response = await axios.get("/all", {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",

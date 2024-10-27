@@ -105,7 +105,7 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
                             ) : null
                         ))
                     ) : (
-                        <MenuItem disabled>No file types accepted</MenuItem>
+                        <MenuItem>No file types accepted</MenuItem>
                     )}
                 </Select>
             </Box>

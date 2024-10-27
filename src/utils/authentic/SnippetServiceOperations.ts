@@ -8,6 +8,9 @@ import {PaginatedUsers} from "../users.ts";
 import {useCreateSnippet} from "../../hooks/useCreateSnippet.ts";
 import {fetchFileTypes} from "../../hooks/fetchFileTypes.ts";
 import {fetchSnippetById} from "../../hooks/fetchSnippetById.ts";
+import {useModifyLintingRules} from "../../hooks/useModifyLintingRules.ts";
+import {useGetLintingRules} from "../../hooks/useGetLintingRules.ts";
+import {useGetFormattingRules} from "../../hooks/useGetFormattingRules.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
@@ -66,12 +69,32 @@ export class SnippetServiceOperations implements SnippetOperations {
         throw new Error("Method not implemented.");
     }
 
-    getFormatRules(): Promise<Rule[]> {
-        throw new Error("Method not implemented.");
+    async getFormatRules(): Promise<Rule[]> {
+        const { getFormattingRules } = useGetFormattingRules();
+        try {
+            const token = await this.getAccessTokenSilently();
+            return await getFormattingRules(token);
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error("Failed to fetch linting rules: " + error.message);
+            } else {
+                throw new Error("Failed to fetch linting rules: An unexpected error occurred");
+            }
+        }
     }
 
-    getLintingRules(): Promise<Rule[]> {
-        throw new Error("Method not implemented.");
+    async getLintingRules(): Promise<Rule[]> {
+        const { getLintRules } = useGetLintingRules();
+        try {
+            const token = await this.getAccessTokenSilently();
+            return await getLintRules(token);
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error("Failed to fetch linting rules: " + error.message);
+            } else {
+                throw new Error("Failed to fetch linting rules: An unexpected error occurred");
+            }
+        }
     }
 
     getTestCases(snippetId: string): Promise<TestCase[]> {
@@ -122,8 +145,17 @@ export class SnippetServiceOperations implements SnippetOperations {
         throw new Error("Method not implemented.");
     }
 
-    modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {
-        console.log(newRules);
-        throw new Error("Method not implemented.");
+    async modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {
+        const { modifyRules } = useModifyLintingRules();
+        try {
+            const token = await this.getAccessTokenSilently();
+            return await modifyRules(newRules, token);
+        } catch(error) {
+            if (error instanceof Error) {
+                throw new Error("Failed to modify linting rules: " + error.message);
+            } else {
+                throw new Error("Failed to modify linting rules: An unexpected error occurred");
+            }
+        }
     }
 }

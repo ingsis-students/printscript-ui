@@ -10,7 +10,7 @@ export const useCreateSnippet = async (
 ): Promise<Snippet> => {
     try {
         const response = await axios.post(
-            "/snippets",
+            "/",
             { name, content, language, extension },
             {
                 headers: {

@@ -8,20 +8,21 @@ import {Rule} from "../types/Rule.ts";
 import {SnippetServiceOperations} from "./authentic/SnippetServiceOperations.ts";
 import {useAuth0} from "@auth0/auth0-react";
 import {useEffect} from "react";
+import {setAuthorizationToken} from "../hooks/axios.config.ts";
 
 
 export const useSnippetsOperations = () => {
     const {getAccessTokenSilently} = useAuth0()
 
     useEffect(() => {
-        getAccessTokenSilently()
+        getAccessTokenSilently({authorizationParams: {scope: 'read:snippets'}})
             .then(token => {
-                console.log(token)
+                setAuthorizationToken(token)
             })
             .catch(error => console.error(error));
     });
 
-    const snippetOperations: SnippetOperations = new SnippetServiceOperations(getAccessTokenSilently);
+    const snippetOperations: SnippetOperations = new SnippetServiceOperations();
 
     return snippetOperations
 }

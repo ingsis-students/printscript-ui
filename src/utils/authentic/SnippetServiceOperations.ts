@@ -8,18 +8,13 @@ import {PaginatedUsers} from "../users.ts";
 import {useCreateSnippet} from "../../hooks/useCreateSnippet.ts";
 import {fetchFileTypes} from "../../hooks/fetchFileTypes.ts";
 import {fetchSnippetById} from "../../hooks/fetchSnippetById.ts";
-import {useModifyLintingRules} from "../../hooks/useModifyLintingRules.ts";
-import {useGetLintingRules} from "../../hooks/useGetLintingRules.ts";
-import {useGetFormattingRules} from "../../hooks/useGetFormattingRules.ts";
+import {fetchModifyLintingRules} from "../../hooks/fetchModifyLintingRules.ts";
+import {fetchGetLintingRules} from "../../hooks/fetchGetLintingRules.ts";
+import {fetchGetFormattingRules} from "../../hooks/fetchGetFormattingRules.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
 
-    private readonly getAccessTokenSilently: () => Promise<string>;
-
-    constructor(getAccessTokenSilently: () => Promise<string>) {
-        this.getAccessTokenSilently = getAccessTokenSilently;
-    }
 
     listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
         console.log(page, pageSize, snippetName);
@@ -30,8 +25,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
         const {name, content, language, extension} = createSnippet;
         try {
-            const token = await this.getAccessTokenSilently();
-            return await useCreateSnippet(name, content, language, extension, token);
+            return await useCreateSnippet(name, content, language, extension);
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to create snippet: " + error.message);
@@ -43,8 +37,7 @@ export class SnippetServiceOperations implements SnippetOperations {
 
     async getSnippetById(id: string): Promise<Snippet | undefined> {
         try {
-            const token = await this.getAccessTokenSilently();
-            return await fetchSnippetById(id, token);
+            return await fetchSnippetById(id);
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to fetch snippet: " + error.message);
@@ -70,10 +63,9 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getFormatRules(): Promise<Rule[]> {
-        const { getFormattingRules } = useGetFormattingRules();
+        const { getFormattingRules } = fetchGetFormattingRules();
         try {
-            const token = await this.getAccessTokenSilently();
-            return await getFormattingRules(token);
+            return await getFormattingRules();
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to fetch linting rules: " + error.message);
@@ -84,10 +76,9 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getLintingRules(): Promise<Rule[]> {
-        const { getLintRules } = useGetLintingRules();
+        const { getLintRules } = fetchGetLintingRules();
         try {
-            const token = await this.getAccessTokenSilently();
-            return await getLintRules(token);
+            return await getLintRules();
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to fetch linting rules: " + error.message);
@@ -129,8 +120,7 @@ export class SnippetServiceOperations implements SnippetOperations {
 
     async getFileTypes(): Promise<FileType[]> {
         try {
-            const token = await this.getAccessTokenSilently();
-            return await fetchFileTypes(token);
+            return await fetchFileTypes();
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to fetch file types: " + error.message);
@@ -146,10 +136,9 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {
-        const { modifyRules } = useModifyLintingRules();
+        const { modifyRules } = fetchModifyLintingRules();
         try {
-            const token = await this.getAccessTokenSilently();
-            return await modifyRules(newRules, token);
+            return await modifyRules(newRules);
         } catch(error) {
             if (error instanceof Error) {
                 throw new Error("Failed to modify linting rules: " + error.message);

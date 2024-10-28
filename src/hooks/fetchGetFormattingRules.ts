@@ -1,18 +1,11 @@
 import { Rule } from "../types/Rule";
 import axios from "axios";
+import {axiosInstance} from "./axios.config.ts";
 
-export function useGetFormattingRules() {
-    const getFormattingRules = async (token: string): Promise<Rule[]> => {
+export function fetchGetFormattingRules() {
+    const getFormattingRules = async (): Promise<Rule[]> => {
         try {
-            const response = await axios.get(
-                "/format/rules",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
+            const response = await axiosInstance.get("/format/rules")
             return response.data as Rule[];
         } catch (error) {
             if (axios.isAxiosError(error)) {

@@ -1,20 +1,26 @@
 import axios from "axios";
 import { FileType } from "../types/FileType";
-axios.defaults.baseURL = "http://localhost:8082/api/languages";
+import {axiosInstance} from "./axios.config.ts";
 
-export const fetchFileTypes = async (token: string): Promise<FileType[]> => {
+interface ApiResponseItem {
+    name: string;
+    extension: string;
+}
+
+export const fetchFileTypes = async (): Promise<FileType[]> => {
     try {
-        console.log("TOKEN",token);
-        const response = await axios.get("/all", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
+        const response = await axiosInstance.get("/languages/all")
+
         if (response.data === undefined) {
             return [];
         }
-        return response.data as FileType[];
+        console.log("Data",response.data)
+
+        return response.data.map((item: ApiResponseItem) => ({
+            language: item.name,
+            extension: item.extension
+        })) as FileType[];
+
     } catch (error) {
         if (axios.isAxiosError(error)) {
             throw new Error(error.response?.data?.message || error.message);

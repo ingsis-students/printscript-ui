@@ -11,16 +11,21 @@ import {fetchSnippetById} from "../../hooks/fetchSnippetById.ts";
 import {fetchModifyLintingRules} from "../../hooks/fetchModifyLintingRules.ts";
 import {fetchGetLintingRules} from "../../hooks/fetchGetLintingRules.ts";
 import {fetchGetFormattingRules} from "../../hooks/fetchGetFormattingRules.ts";
+import {axiosInstance} from "../../hooks/axios.config.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
 
-
-    listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
-        console.log(page, pageSize, snippetName);
-        throw new Error("Method not implemented.");
+    async listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
+        const response = await axiosInstance('/snippets', {
+            params: {
+                page,
+                pageSize,
+                snippetName,
+            },
+        });
+        return response.data;
     }
-
 
     createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
         const {name, content, language, extension} = createSnippet;

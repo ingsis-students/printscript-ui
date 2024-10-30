@@ -40,7 +40,7 @@ export const SnippetTable = (props: SnippetTableProps) => {
   const {page, page_size: pageSize, count, handleChangePageSize, handleGoToPage} = usePaginationContext()
   const {createSnackbar} = useSnackbarContext()
   const {data: fileTypes} = useGetFileTypes();
-  console.log(fileTypes)
+
   const handleLoadSnippet = async (target: EventTarget & HTMLInputElement) => {
     const files = target.files
     if (!files || !files.length) {

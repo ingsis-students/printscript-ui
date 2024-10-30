@@ -6,23 +6,26 @@ import {TestCase} from "../types/TestCase.ts";
 import {FileType} from "../types/FileType.ts";
 import {Rule} from "../types/Rule.ts";
 import {SnippetServiceOperations} from "./authentic/SnippetServiceOperations.ts";
-import {useAuth0} from "@auth0/auth0-react";
-import {useEffect} from "react";
+import {useAuth0, User} from "@auth0/auth0-react";
+import {useEffect, useState} from "react";
 import {setAuthorizationToken} from "../hooks/axios.config.ts";
 
 
 export const useSnippetsOperations = () => {
-    const {getAccessTokenSilently} = useAuth0()
+    const {getAccessTokenSilently, user} = useAuth0()
+    const [authUser, setUser] = useState<User>()
 
     useEffect(() => {
         getAccessTokenSilently({authorizationParams: {scope: 'read:snippets'}})
             .then(token => {
                 setAuthorizationToken(token)
+                setUser(user)
             })
             .catch(error => console.error(error));
+
     });
 
-    const snippetOperations: SnippetOperations = new SnippetServiceOperations();
+    const snippetOperations: SnippetOperations = new SnippetServiceOperations(authUser);
 
     return snippetOperations
 }

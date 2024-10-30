@@ -11,10 +11,16 @@ import {fetchSnippetById} from "../../hooks/fetchSnippetById.ts";
 import {fetchModifyLintingRules} from "../../hooks/fetchModifyLintingRules.ts";
 import {fetchGetLintingRules} from "../../hooks/fetchGetLintingRules.ts";
 import {fetchGetFormattingRules} from "../../hooks/fetchGetFormattingRules.ts";
+import {User} from "@auth0/auth0-react";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
+    private user?: User;
 
+
+    constructor(user?: User) {
+        this.user = user
+    }
 
     listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
         console.log(page, pageSize, snippetName);
@@ -23,9 +29,10 @@ export class SnippetServiceOperations implements SnippetOperations {
 
 
     createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
-        const {name, content, language, extension} = createSnippet;
+        const {name, content, language} = createSnippet;
         try {
-            return await useCreateSnippet(name, content, language, extension);
+            const owner = this.user?.email
+            return await useCreateSnippet(name, content, language, owner);
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to create snippet: " + error.message);

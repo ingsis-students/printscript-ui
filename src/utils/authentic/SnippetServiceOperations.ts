@@ -12,21 +12,24 @@ import {fetchModifyLintingRules} from "../../hooks/fetchModifyLintingRules.ts";
 import {fetchGetLintingRules} from "../../hooks/fetchGetLintingRules.ts";
 import {fetchGetFormattingRules} from "../../hooks/fetchGetFormattingRules.ts";
 import {User} from "@auth0/auth0-react";
+import {axiosInstance} from "../../hooks/axios.config.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
     private user?: User;
 
-
     constructor(user?: User) {
         this.user = user
     }
-
-    listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
-        console.log(page, pageSize, snippetName);
-        throw new Error("Method not implemented.");
-    }
-
+    async listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
+        const response = await axiosInstance('/snippets', {
+            params: {
+                page,
+                pageSize,
+                snippetName,
+            },
+        });
+        return response.data;
 
     createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
         const {name, content, language} = createSnippet;

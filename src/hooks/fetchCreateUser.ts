@@ -14,6 +14,10 @@ export const fetchCreateUser = async (token: string, email: string): Promise<Use
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
+            if (error.response?.status === 409) {
+                console.log("User already exists.");
+                return error.response.data;
+            }
             throw new Error(error.response?.data?.message || error.message);
         } else {
             throw new Error("An unexpected error occurred");

@@ -33,8 +33,6 @@ export const useSnippetsOperations = () => {
 export const useGetSnippets = (page: number = 0, pageSize: number = 10, snippetName?: string) => {
     const snippetOperations = useSnippetsOperations();
 
-    console.log("useGetSnippets", snippetName)
-
     return useQuery<PaginatedSnippets, Error>(
         ['listSnippets', page, pageSize, snippetName],
         () => snippetOperations.listSnippetDescriptors(page, pageSize, snippetName)

@@ -21,6 +21,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     constructor(user?: User) {
         this.user = user
     }
+
     async listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
         const response = await axiosInstance('/snippets', {
             params: {
@@ -30,6 +31,7 @@ export class SnippetServiceOperations implements SnippetOperations {
             },
         });
         return response.data;
+    }
 
     createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
         const {name, content, language} = createSnippet;
@@ -118,9 +120,17 @@ export class SnippetServiceOperations implements SnippetOperations {
         throw new Error("Method not implemented.");
     }
 
-    deleteSnippet(id: string): Promise<string> {
-        console.log(id);
-        throw new Error("Method not implemented.");
+    async deleteSnippet(id: string): Promise<string> {
+        try {
+            await axiosInstance.post(`/snippets/delete/${id}`);
+            return `Snippet of id: ${id} deleted successfully`;
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error("Failed to delete snippet: " + error.message);
+            } else {
+                throw new Error("Failed to delete snippet: An unexpected error occurred");
+            }
+        }
     }
 
     testSnippet(testCase: Partial<TestCase>): Promise<TestCaseResult> {

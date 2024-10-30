@@ -139,15 +139,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getFileTypes(): Promise<FileType[]> {
-        try {
-            return await fetchFileTypes();
-        } catch (error) {
-            if (error instanceof Error) {
-                throw new Error("Failed to fetch file types: " + error.message);
-            } else {
-                throw new Error("Failed to fetch file types: An unexpected error occurred");
-            }
-        }
+       return fetchFileTypes();
     }
 
     modifyFormatRule(newRules: Rule[]): Promise<Rule[]> {

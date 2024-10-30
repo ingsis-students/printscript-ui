@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FileType } from "../types/FileType";
+import {FileType} from "../types/FileType";
 import {axiosInstance} from "./axios.config.ts";
 
 interface ApiResponseItem {
@@ -24,7 +24,11 @@ export const fetchFileTypes = async (): Promise<FileType[]> => {
 
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || error.message);
+            if (error.response?.status === 401) {
+                return [];
+            } else {
+                throw new Error(error.response?.data?.message || error.message);
+            }
         } else {
             throw new Error("An unexpected error occurred");
         }

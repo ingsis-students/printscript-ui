@@ -37,11 +37,13 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
     const {data: fileTypes} = useGetFileTypes();
 
     const handleCreateSnippet = async () => {
+        const selectedFileType = fileTypes?.find((f) => f.language === language)
+
         const newSnippet: CreateSnippet = {
             name: snippetName,
             content: code,
-            language: language,
-            extension: fileTypes?.find((f) => f.language === language)?.extension ?? "prs"
+            language: selectedFileType?.id ?? "1",
+            extension: selectedFileType?.extension ?? "prs"
         }
         await createSnippet(newSnippet);
         onClose();
@@ -105,7 +107,7 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
                             ) : null
                         ))
                     ) : (
-                        <MenuItem disabled>No file types accepted</MenuItem>
+                        <MenuItem>No file types accepted</MenuItem>
                     )}
                 </Select>
             </Box>

@@ -1,24 +1,15 @@
 import axios from "axios";
-import { Snippet } from "../utils/snippet.ts";
+import {Snippet} from "../utils/snippet.ts";
+import {axiosInstance} from "./axios.config.ts";
 
 export const useCreateSnippet = async (
     name: string,
     content: string,
-    language: string,
-    extension: string,
-    token: string
+    languageId: string,
+    ownerEmail?: string
 ): Promise<Snippet> => {
     try {
-        const response = await axios.post(
-            "/",
-            { name, content, language, extension },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                }
-            }
-        );
+        const response = await axiosInstance.post("/snippets/", {name, content, languageId, owner: ownerEmail});
 
         return response.data as Snippet;
     } catch (error) {

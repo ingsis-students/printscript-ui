@@ -8,30 +8,36 @@ import {PaginatedUsers} from "../users.ts";
 import {useCreateSnippet} from "../../hooks/useCreateSnippet.ts";
 import {fetchFileTypes} from "../../hooks/fetchFileTypes.ts";
 import {fetchSnippetById} from "../../hooks/fetchSnippetById.ts";
-import {useModifyLintingRules} from "../../hooks/useModifyLintingRules.ts";
-import {useGetLintingRules} from "../../hooks/useGetLintingRules.ts";
-import {useGetFormattingRules} from "../../hooks/useGetFormattingRules.ts";
+import {fetchModifyLintingRules} from "../../hooks/fetchModifyLintingRules.ts";
+import {fetchGetLintingRules} from "../../hooks/fetchGetLintingRules.ts";
+import {fetchGetFormattingRules} from "../../hooks/fetchGetFormattingRules.ts";
+import {User} from "@auth0/auth0-react";
+import {axiosInstance} from "../../hooks/axios.config.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
+    private user?: User;
 
-    private readonly getAccessTokenSilently: () => Promise<string>;
-
-    constructor(getAccessTokenSilently: () => Promise<string>) {
-        this.getAccessTokenSilently = getAccessTokenSilently;
+    constructor(user?: User) {
+        this.user = user
     }
 
-    listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
-        console.log(page, pageSize, snippetName);
-        throw new Error("Method not implemented.");
+    async listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
+        const response = await axiosInstance('/snippets', {
+            params: {
+                page,
+                pageSize,
+                snippetName,
+            },
+        });
+        return response.data;
     }
-
 
     createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
-        const {name, content, language, extension} = createSnippet;
+        const {name, content, language} = createSnippet;
         try {
-            const token = await this.getAccessTokenSilently();
-            return await useCreateSnippet(name, content, language, extension, token);
+            const owner = this.user?.email
+            return await useCreateSnippet(name, content, language, owner);
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to create snippet: " + error.message);
@@ -43,8 +49,7 @@ export class SnippetServiceOperations implements SnippetOperations {
 
     async getSnippetById(id: string): Promise<Snippet | undefined> {
         try {
-            const token = await this.getAccessTokenSilently();
-            return await fetchSnippetById(id, token);
+            return await fetchSnippetById(id);
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to fetch snippet: " + error.message);
@@ -70,10 +75,9 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getFormatRules(): Promise<Rule[]> {
-        const { getFormattingRules } = useGetFormattingRules();
+        const { getFormattingRules } = fetchGetFormattingRules();
         try {
-            const token = await this.getAccessTokenSilently();
-            return await getFormattingRules(token);
+            return await getFormattingRules();
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to fetch linting rules: " + error.message);
@@ -84,10 +88,9 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getLintingRules(): Promise<Rule[]> {
-        const { getLintRules } = useGetLintingRules();
+        const { getLintRules } = fetchGetLintingRules();
         try {
-            const token = await this.getAccessTokenSilently();
-            return await getLintRules(token);
+            return await getLintRules();
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to fetch linting rules: " + error.message);
@@ -117,9 +120,17 @@ export class SnippetServiceOperations implements SnippetOperations {
         throw new Error("Method not implemented.");
     }
 
-    deleteSnippet(id: string): Promise<string> {
-        console.log(id);
-        throw new Error("Method not implemented.");
+    async deleteSnippet(id: string): Promise<string> {
+        try {
+            await axiosInstance.post(`/snippets/delete/${id}`);
+            return `Snippet of id: ${id} deleted successfully`;
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error("Failed to delete snippet: " + error.message);
+            } else {
+                throw new Error("Failed to delete snippet: An unexpected error occurred");
+            }
+        }
     }
 
     testSnippet(testCase: Partial<TestCase>): Promise<TestCaseResult> {
@@ -128,16 +139,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getFileTypes(): Promise<FileType[]> {
-        try {
-            const token = await this.getAccessTokenSilently();
-            return await fetchFileTypes(token);
-        } catch (error) {
-            if (error instanceof Error) {
-                throw new Error("Failed to fetch file types: " + error.message);
-            } else {
-                throw new Error("Failed to fetch file types: An unexpected error occurred");
-            }
-        }
+       return fetchFileTypes();
     }
 
     modifyFormatRule(newRules: Rule[]): Promise<Rule[]> {
@@ -146,10 +148,9 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {
-        const { modifyRules } = useModifyLintingRules();
+        const { modifyRules } = fetchModifyLintingRules();
         try {
-            const token = await this.getAccessTokenSilently();
-            return await modifyRules(newRules, token);
+            return await modifyRules(newRules);
         } catch(error) {
             if (error instanceof Error) {
                 throw new Error("Failed to modify linting rules: " + error.message);

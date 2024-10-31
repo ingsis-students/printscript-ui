@@ -1,21 +1,34 @@
 import axios from "axios";
-import { FileType } from "../types/FileType";
+import {FileType} from "../types/FileType";
+import {axiosInstance} from "./axios.config.ts";
 
-export const fetchFileTypes = async (token: string): Promise<FileType[]> => {
+interface ApiResponseItem {
+    name: string;
+    extension: string;
+    id: string;
+}
+
+export const fetchFileTypes = async (): Promise<FileType[]> => {
     try {
-        const response = await axios.get("/extensions", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
+        const response = await axiosInstance.get("/languages/all")
+
         if (response.data === undefined) {
             return [];
         }
-        return response.data as FileType[];
+
+        return response.data.map((item: ApiResponseItem) => ({
+            language: item.name,
+            extension: item.extension,
+            id: item.id as string
+        })) as FileType[];
+
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || error.message);
+            if (error.response?.status === 401) {
+                return [];
+            } else {
+                throw new Error(error.response?.data?.message || error.message);
+            }
         } else {
             throw new Error("An unexpected error occurred");
         }

@@ -49,3 +49,5 @@ jobs:
           build-args: |
             GITHUB_ACTOR=${{ inputs.actor }}
             GITHUB_TOKEN=${{ secrets.token }}
+            VITE_AUTH0_DOMAIN=${{ secrets.VITE_AUTH0_DOMAIN }}
+            VITE_AUTH0_CLIENT_ID=${{ secrets.VITE_AUTH0_CLIENT_ID }}

@@ -2,7 +2,7 @@ import {FileType} from "../../types/FileType.ts";
 import {Rule} from "../../types/Rule.ts";
 import {TestCase} from "../../types/TestCase.ts";
 import {TestCaseResult} from "../queries.tsx";
-import {CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "../snippet.ts";
+import {ComplianceEnum, CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "../snippet.ts";
 import {SnippetOperations} from "../snippetOperations.ts";
 import {PaginatedUsers} from "../users.ts";
 import {useCreateSnippet} from "../../hooks/useCreateSnippet.ts";
@@ -31,7 +31,12 @@ export class SnippetServiceOperations implements SnippetOperations {
             },
         });
         console.log("response",response.data);
-        return response.data;
+        return {
+            page,
+            page_size: pageSize,
+            count: response.data.count,
+            snippets: response.data.snippets.map(mapToSnippet)
+        } as PaginatedSnippets;
     }
 
     createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
@@ -152,4 +157,24 @@ export class SnippetServiceOperations implements SnippetOperations {
             }
         }
     }
+}
+
+const mapToSnippet = (snippet: SnippetResponse): Snippet => ({
+    id: snippet.id,
+    name: snippet.name,
+    content: snippet.content,
+    language: snippet.language,
+    extension: snippet.extension,
+    compliance: (snippet.compilance as ComplianceEnum) || 'pending',
+    author: snippet.owner
+});
+
+type SnippetResponse = {
+    id: string;
+    name: string;
+    content: string;
+    language: string;
+    extension: string;
+    compilance?: string;
+    owner: string;
 }

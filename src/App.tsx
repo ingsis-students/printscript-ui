@@ -6,6 +6,7 @@ import {QueryClient, QueryClientProvider} from "react-query";
 import RulesScreen from "./screens/Rules.tsx";
 import {withAuthenticationRequired} from "@auth0/auth0-react";
 import AuthCallback from "./components/auth/AuthCallback.tsx";
+import {TokenProvider} from "./contexts/TokenProvider.tsx";
 
 const router = createBrowserRouter([
     {
@@ -26,7 +27,9 @@ export const queryClient = new QueryClient()
 const App = () => {
     return (
         <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router}/>
+            <TokenProvider>
+                <RouterProvider router={router}/>
+            </TokenProvider>
         </QueryClientProvider>
     );
 }

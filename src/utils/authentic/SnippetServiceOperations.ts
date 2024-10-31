@@ -2,7 +2,7 @@ import {FileType} from "../../types/FileType.ts";
 import {Rule} from "../../types/Rule.ts";
 import {TestCase} from "../../types/TestCase.ts";
 import {TestCaseResult} from "../queries.tsx";
-import {CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "../snippet.ts";
+import {ComplianceEnum, CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "../snippet.ts";
 import {SnippetOperations} from "../snippetOperations.ts";
 import {PaginatedUsers} from "../users.ts";
 import {useCreateSnippet} from "../../hooks/useCreateSnippet.ts";
@@ -30,21 +30,19 @@ export class SnippetServiceOperations implements SnippetOperations {
                 snippetName,
             },
         });
-        return response.data;
+
+        return {
+            page,
+            page_size: pageSize,
+            count: response.data.count,
+            snippets: response.data.snippets.map(mapToSnippet)
+        } as PaginatedSnippets;
     }
 
     createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
         const {name, content, language} = createSnippet;
-        try {
-            const owner = this.user?.email
-            return await useCreateSnippet(name, content, language, owner);
-        } catch (error) {
-            if (error instanceof Error) {
-                throw new Error("Failed to create snippet: " + error.message);
-            } else {
-                throw new Error("Failed to create snippet: An unexpected error occurred");
-            }
-        }
+        const owner = this.user?.email
+        return await useCreateSnippet(name, content, language, owner);
     };
 
     async getSnippetById(id: string): Promise<Snippet | undefined> {
@@ -75,7 +73,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getFormatRules(): Promise<Rule[]> {
-        const { getFormattingRules } = fetchGetFormattingRules();
+        const {getFormattingRules} = fetchGetFormattingRules();
         try {
             return await getFormattingRules();
         } catch (error) {
@@ -88,7 +86,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getLintingRules(): Promise<Rule[]> {
-        const { getLintRules } = fetchGetLintingRules();
+        const {getLintRules} = fetchGetLintingRules();
         try {
             return await getLintRules();
         } catch (error) {
@@ -139,7 +137,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getFileTypes(): Promise<FileType[]> {
-       return fetchFileTypes();
+        return fetchFileTypes();
     }
 
     modifyFormatRule(newRules: Rule[]): Promise<Rule[]> {
@@ -148,10 +146,10 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {
-        const { modifyRules } = fetchModifyLintingRules();
+        const {modifyRules} = fetchModifyLintingRules();
         try {
             return await modifyRules(newRules);
-        } catch(error) {
+        } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to modify linting rules: " + error.message);
             } else {
@@ -159,4 +157,24 @@ export class SnippetServiceOperations implements SnippetOperations {
             }
         }
     }
+}
+
+const mapToSnippet = (snippet: SnippetResponse): Snippet => ({
+    id: snippet.id,
+    name: snippet.name,
+    content: snippet.content,
+    language: snippet.language,
+    extension: snippet.extension,
+    compliance: (snippet.compilance as ComplianceEnum) || 'pending',
+    author: snippet.owner
+});
+
+type SnippetResponse = {
+    id: string;
+    name: string;
+    content: string;
+    language: string;
+    extension: string;
+    compilance?: string;
+    owner: string;
 }

@@ -30,21 +30,14 @@ export class SnippetServiceOperations implements SnippetOperations {
                 snippetName,
             },
         });
+        console.log("response",response.data);
         return response.data;
     }
 
     createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
         const {name, content, language} = createSnippet;
-        try {
-            const owner = this.user?.email
-            return await useCreateSnippet(name, content, language, owner);
-        } catch (error) {
-            if (error instanceof Error) {
-                throw new Error("Failed to create snippet: " + error.message);
-            } else {
-                throw new Error("Failed to create snippet: An unexpected error occurred");
-            }
-        }
+        const owner = this.user?.email
+        return await useCreateSnippet(name, content, language, owner);
     };
 
     async getSnippetById(id: string): Promise<Snippet | undefined> {
@@ -75,7 +68,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getFormatRules(): Promise<Rule[]> {
-        const { getFormattingRules } = fetchGetFormattingRules();
+        const {getFormattingRules} = fetchGetFormattingRules();
         try {
             return await getFormattingRules();
         } catch (error) {
@@ -88,7 +81,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getLintingRules(): Promise<Rule[]> {
-        const { getLintRules } = fetchGetLintingRules();
+        const {getLintRules} = fetchGetLintingRules();
         try {
             return await getLintRules();
         } catch (error) {
@@ -139,7 +132,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getFileTypes(): Promise<FileType[]> {
-       return fetchFileTypes();
+        return fetchFileTypes();
     }
 
     modifyFormatRule(newRules: Rule[]): Promise<Rule[]> {
@@ -148,10 +141,10 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {
-        const { modifyRules } = fetchModifyLintingRules();
+        const {modifyRules} = fetchModifyLintingRules();
         try {
             return await modifyRules(newRules);
-        } catch(error) {
+        } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Failed to modify linting rules: " + error.message);
             } else {

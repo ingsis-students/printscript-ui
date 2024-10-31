@@ -30,7 +30,7 @@ export class SnippetServiceOperations implements SnippetOperations {
                 snippetName,
             },
         });
-        console.log("response",response.data);
+
         return {
             page,
             page_size: pageSize,

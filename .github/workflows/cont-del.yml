@@ -19,6 +19,12 @@ on:
       token:
         description: 'Personal Access Token with sufficient rights to publish Docker image'
         required: true
+      VITE_AUTH0_DOMAIN:
+        description: 'Auth0 domain'
+        required: true
+      VITE_AUTH0_CLIENT_ID:
+        description: 'Auth0 client ID'
+        required: true
 
 jobs:
   delivery:
@@ -47,7 +53,5 @@ jobs:
           push: true
           tags: ${{ inputs.registry }}/${{ inputs.image_name }}
           build-args: |
-            GITHUB_ACTOR=${{ inputs.actor }}
-            GITHUB_TOKEN=${{ secrets.token }}
             VITE_AUTH0_DOMAIN=${{ secrets.VITE_AUTH0_DOMAIN }}
             VITE_AUTH0_CLIENT_ID=${{ secrets.VITE_AUTH0_CLIENT_ID }}

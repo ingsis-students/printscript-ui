@@ -11,7 +11,15 @@ export const useCreateSnippet = async (
     try {
         const response = await axiosInstance.post("/snippets/", {name, content, languageId, owner: ownerEmail});
 
-        return response.data as Snippet;
+        return {
+            id: response.data.id,
+            name: response.data.name,
+            content: response.data.content,
+            language: response.data.language,
+            extension: response.data.extension,
+            compliance: response.data.compilance,
+            author: response.data.owner
+        } as Snippet
     } catch (error) {
         if (axios.isAxiosError(error)) {
             throw new Error(error.response?.data?.message || error.message);

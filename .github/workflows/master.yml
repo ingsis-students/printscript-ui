@@ -26,6 +26,8 @@ jobs:
       actor: ${{ github.actor }}
     secrets:
       token: ${{ secrets.PAT }}
+      VITE_AUTH0_DOMAIN: ${{ secrets.VITE_AUTH0_DOMAIN }}
+      VITE_AUTH0_CLIENT_ID: ${{ secrets.VITE_AUTH0_CLIENT_ID }}
 
   update-virtual-machine:
     name: update virtual machine

@@ -70,18 +70,18 @@ export const useShareSnippet = () => {
 };
 
 
-export const useGetTestCases = () => {
+export const useGetTestCases = (snippetId: string) => {
     const snippetOperations = useSnippetsOperations()
 
-    return useQuery<TestCase[] | undefined, Error>(['testCases'], () => snippetOperations.getTestCases("Pa que buildee, hay que pasarle el snippet id"), {});
+    return useQuery<TestCase[] | undefined, Error>(['testCases'], () => snippetOperations.getTestCases(snippetId), {});
 };
 
 
-export const usePostTestCase = () => {
+export const usePostTestCase = (snippetId: string) => {
     const snippetOperations = useSnippetsOperations()
 
     return useMutation<TestCase, Error, Partial<TestCase>>(
-        (tc) => snippetOperations.postTestCase(tc)
+        (tc) => snippetOperations.postTestCase(tc, snippetId)
     );
 };
 

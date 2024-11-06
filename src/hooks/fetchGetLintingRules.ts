@@ -5,7 +5,7 @@ import {axiosInstance} from "./axios.config.ts";
 export function fetchGetLintingRules() {
     const getLintingRules = async (): Promise<Rule[]> => {
         try {
-            const response = await axiosInstance.get("/lint/rules")
+            const response = await axiosInstance.get("snippets/lint/rules")
 
             return response.data as Rule[];
         } catch (error) {

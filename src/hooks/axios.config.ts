@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://nginx:80";
-// const BASE_URL = "http://localhost:80";
+const BASE_URL = "http://localhost:80";
 
 const axiosSnippetService = axios.create({
     baseURL: BASE_URL + "/api",

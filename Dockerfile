@@ -1,5 +1,12 @@
 # Stage 1: Build the project
 FROM --platform=linux/amd64 node:18-alpine AS builder
+
+ARG VITE_AUTH0_DOMAIN
+ARG VITE_AUTH0_CLIENT_ID
+
+ENV VITE_AUTH0_DOMAIN=$VITE_AUTH0_DOMAIN
+ENV VITE_AUTH0_CLIENT_ID=$VITE_AUTH0_CLIENT_ID
+
 WORKDIR /app
 COPY package*.json ./
 RUN npm install

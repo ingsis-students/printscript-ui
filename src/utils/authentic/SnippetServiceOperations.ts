@@ -112,9 +112,15 @@ export class SnippetServiceOperations implements SnippetOperations {
         throw new Error("Method not implemented.");
     }
 
-    postTestCase(testCase: Partial<TestCase>): Promise<TestCase> {
-        console.log(testCase);
-        throw new Error("Method not implemented.");
+    async postTestCase(testCase: Partial<TestCase>, snippetId: string): Promise<TestCase> {
+        if (!testCase.input || !testCase.output) {
+            throw new Error("Test case must have input and output");
+        }
+        if (!snippetId) {
+            throw new Error("Test case must have a snippet id");
+        }
+        const response = await axiosInstance.post(`test/snippets/${snippetId}`, testCase);
+        return response.data;
     }
 
     removeTestCase(id: string): Promise<string> {

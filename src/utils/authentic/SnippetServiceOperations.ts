@@ -12,7 +12,10 @@ import {fetchModifyLintingRules} from "../../hooks/fetchModifyLintingRules.ts";
 import {fetchGetLintingRules} from "../../hooks/fetchGetLintingRules.ts";
 import {fetchGetFormattingRules} from "../../hooks/fetchGetFormattingRules.ts";
 import {User} from "@auth0/auth0-react";
-import {axiosInstance} from "../../hooks/axios.config.ts";
+import {axiosPermissionService, axiosSnippetService} from "../../hooks/axios.config.ts";
+import {fetchUpdateSnippet} from "../../hooks/fetchUpdateSnippet.ts";
+import {fetchUserFriends} from "../../hooks/fetchUserFriends.ts";
+import {fetchShareSnippet} from "../../hooks/fetchShareSnippet.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
@@ -23,7 +26,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
-        const response = await axiosInstance('/snippets', {
+        const response = await axiosSnippetService('/snippets', {
             params: {
                 page,
                 pageSize,
@@ -46,30 +49,31 @@ export class SnippetServiceOperations implements SnippetOperations {
     };
 
     async getSnippetById(id: string): Promise<Snippet | undefined> {
-        try {
-            return await fetchSnippetById(id);
-        } catch (error) {
-            if (error instanceof Error) {
-                throw new Error("Failed to fetch snippet: " + error.message);
-            } else {
-                throw new Error("Failed to fetch snippet: An unexpected error occurred");
-            }
+       return await fetchSnippetById(id);
+    }
+
+    async updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<Snippet> {
+        return await fetchUpdateSnippet(id, updateSnippet.content);
+    }
+
+    async getUserFriends(name?: string | undefined, page?: number | undefined, pageSize?: number | undefined): Promise<PaginatedUsers> {
+        const email = this.user?.email;
+        return await fetchUserFriends(name, page, pageSize, email);
+    }
+
+    async shareSnippet(snippetId: string, userId: string): Promise<Snippet> {
+        const ownerEmail = this.user?.email;
+        const user = await this.getUserById(userId);
+        return await fetchShareSnippet(snippetId, user.email, ownerEmail);
+    }
+
+    async getUserById(id: string): Promise<User> {
+        const user = await axiosPermissionService.get(`/get/${id}`);
+        if (user) {
+            return user.data;
+        } else {
+            throw new Error("User not found");
         }
-    }
-
-    updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<Snippet> {
-        console.log(id, updateSnippet);
-        throw new Error("Method not implemented.");
-    }
-
-    getUserFriends(name?: string | undefined, page?: number | undefined, pageSize?: number | undefined): Promise<PaginatedUsers> {
-        console.log(name, page, pageSize);
-        throw new Error("Method not implemented.");
-    }
-
-    shareSnippet(snippetId: string, userId: string): Promise<Snippet> {
-        console.log(snippetId, userId);
-        throw new Error("Method not implemented.");
     }
 
     async getFormatRules(): Promise<Rule[]> {
@@ -120,7 +124,7 @@ export class SnippetServiceOperations implements SnippetOperations {
 
     async deleteSnippet(id: string): Promise<string> {
         try {
-            await axiosInstance.post(`/snippets/delete/${id}`);
+            await axiosSnippetService.post(`/snippets/delete/${id}`);
             return `Snippet of id: ${id} deleted successfully`;
         } catch (error) {
             if (error instanceof Error) {

@@ -1,11 +1,11 @@
 import {Rule} from "../types/Rule";
 import axios from "axios";
-import {axiosInstance} from "./axios.config.ts";
+import {axiosSnippetService} from "./axios.config.ts";
 
 export function fetchModifyLintingRules() {
     const modifyRules = async (newRules: Rule[]): Promise<Rule[]> => {
         try {
-            const response = await axiosInstance.post("/lint/rules", {rules: newRules})
+            const response = await axiosSnippetService.post("/lint/rules", {rules: newRules})
 
             return response.data as Rule[];
         } catch (error) {

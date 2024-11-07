@@ -1,11 +1,11 @@
 import { Rule } from "../types/Rule";
 import axios from "axios";
-import {axiosInstance} from "./axios.config.ts";
+import {axiosSnippetService} from "./axios.config.ts";
 
 export function fetchGetFormattingRules() {
     const getFormattingRules = async (): Promise<Rule[]> => {
         try {
-            const response = await axiosInstance.get("/format/rules")
+            const response = await axiosSnippetService.get("/format/rules")
             return response.data as Rule[];
         } catch (error) {
             if (axios.isAxiosError(error)) {

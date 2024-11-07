@@ -1,6 +1,6 @@
 import axios from "axios";
 import {FileType} from "../types/FileType";
-import {axiosInstance} from "./axios.config.ts";
+import {axiosSnippetService} from "./axios.config.ts";
 
 interface ApiResponseItem {
     name: string;
@@ -10,7 +10,7 @@ interface ApiResponseItem {
 
 export const fetchFileTypes = async (): Promise<FileType[]> => {
     try {
-        const response = await axiosInstance.get("/languages/all")
+        const response = await axiosSnippetService.get("/languages/all")
 
         if (response.data === undefined) {
             return [];

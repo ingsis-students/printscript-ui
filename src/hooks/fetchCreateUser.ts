@@ -1,15 +1,12 @@
 import {User} from "@auth0/auth0-react";
 import axios from "axios";
+import {axiosPermissionService} from "./axios.config.ts";
 
 
-export const fetchCreateUser = async (token: string, email: string): Promise<User> => {
+export const fetchCreateUser = async (email: string): Promise<User> => {
 
     try {
-        const response = await axios.post<User>("http://localhost:8083/api/user/", {email}, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            }
-        });
+        const response = await axiosPermissionService.post<User>("/", {email})
 
         return response.data;
     } catch (error) {

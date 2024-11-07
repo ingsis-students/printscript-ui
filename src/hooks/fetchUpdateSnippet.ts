@@ -1,10 +1,11 @@
-import axios from "axios";
 import {Snippet} from "../utils/snippet.ts";
 import {axiosSnippetService} from "./axios.config.ts";
+import axios from "axios";
 
-const fetchSnippetById = async (id: string): Promise<Snippet | undefined> => {
+
+const fetchUpdateSnippet = async (id: string, content: string): Promise<Snippet> => {
     try {
-        const response = await axiosSnippetService.get(`/snippets/${id}`)
+        const response = await axiosSnippetService.put(`/snippets/${id}`, {content})
 
         return response.data as Snippet;
     } catch (error) {
@@ -16,4 +17,4 @@ const fetchSnippetById = async (id: string): Promise<Snippet | undefined> => {
     }
 }
 
-export {fetchSnippetById};
+export {fetchUpdateSnippet};

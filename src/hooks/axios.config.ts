@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = "http://localhost:80";
+// const BASE_URL= "https://ingsis-students.duckdns.org";
 
 const axiosSnippetService = axios.create({
     baseURL: BASE_URL + "/api",

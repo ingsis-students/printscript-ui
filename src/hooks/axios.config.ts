@@ -1,19 +1,19 @@
 import axios from "axios";
 
-// const BASE_URL = "http://nginx:80";
+const BASE_URL = "http://nginx:80";
 // const BASE_URL = "http://localhost:80";
 
 const axiosSnippetService = axios.create({
-    // baseURL: BASE_URL + "/api",
-    baseURL: "http://localhost:8082/api/",
+    baseURL: BASE_URL + "/api",
+    // baseURL: "http://localhost:8082/api/",
     headers: {
         "Content-Type": "application/json",
     },
 });
 
 const axiosPermissionService = axios.create({
-    baseURL: "http://localhost:8083/api/user",
-    // baseURL: BASE_URL + "/api/user",
+    // baseURL: "http://localhost:8083/api/user",
+    baseURL: BASE_URL + "/api/user",
     headers: {
         "Content-Type": "application/json",
     },

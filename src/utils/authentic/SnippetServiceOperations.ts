@@ -119,7 +119,7 @@ export class SnippetServiceOperations implements SnippetOperations {
         if (!snippetId) {
             throw new Error("Test case must have a snippet id");
         }
-        const response = await axiosInstance.post(`test/snippets/${snippetId}`, testCase);
+        const response = await axiosSnippetService.post(`test/snippets/${snippetId}`, testCase);
         return response.data;
     }
 

@@ -102,14 +102,18 @@ export class SnippetServiceOperations implements SnippetOperations {
         }
     }
 
-    getTestCases(snippetId: string): Promise<TestCase[]> {
-        console.log(snippetId);
-        throw new Error("Method not implemented.");
-    }
-
     formatSnippet(snippet: string): Promise<string> {
         console.log(snippet);
         throw new Error("Method not implemented.");
+    }
+
+    async getTestCases(snippetId: string): Promise<TestCase[]> {
+        if (!snippetId) {
+            throw new Error("For what snippet id you want the tests?");
+        }
+
+        const response = await axiosSnippetService.get(`tests/snippet/${snippetId}`);
+        return Array.isArray(response.data) ? response.data : [];
     }
 
     async postTestCase(testCase: Partial<TestCase>, snippetId: string): Promise<TestCase> {
@@ -119,7 +123,7 @@ export class SnippetServiceOperations implements SnippetOperations {
         if (!snippetId) {
             throw new Error("Test case must have a snippet id");
         }
-        const response = await axiosSnippetService.post(`test/snippets/${snippetId}`, testCase);
+        const response = await axiosSnippetService.post(`tests/snippet/${snippetId}`, testCase);
         return response.data;
     }
 

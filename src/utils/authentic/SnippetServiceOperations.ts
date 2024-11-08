@@ -49,7 +49,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     };
 
     async getSnippetById(id: string): Promise<Snippet | undefined> {
-       return await fetchSnippetById(id);
+        return await fetchSnippetById(id);
     }
 
     async updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<Snippet> {
@@ -146,9 +146,12 @@ export class SnippetServiceOperations implements SnippetOperations {
         }
     }
 
-    testSnippet(testCase: Partial<TestCase>): Promise<TestCaseResult> {
-        console.log(testCase);
-        throw new Error("Method not implemented.");
+    async testSnippet(testCase: Partial<TestCase>): Promise<TestCaseResult> {
+        if (!testCase.id) {
+            throw new Error("Test case ID is required");
+        }
+        const response = await axiosSnippetService.post<string>(`/tests/${testCase.id}/run`);
+        return response.data as TestCaseResult;
     }
 
     async getFileTypes(): Promise<FileType[]> {

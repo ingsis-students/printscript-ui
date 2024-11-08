@@ -152,7 +152,7 @@ export class SnippetServiceOperations implements SnippetOperations {
         if (!testCase.id) {
             throw new Error("Test case ID is required");
         }
-        const response = await axiosSnippetService.post<string>(`/tests/${testCase.id}/run`);
+        const response = await axiosInstance.post<string>(`/tests/${testCase.id}/run`);
         return response.data as TestCaseResult;
     }
 

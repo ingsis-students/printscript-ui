@@ -1,27 +1,17 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:80";
+const BASE_URL = "http://localhost:80/api";
 // const BASE_URL= "https://ingsis-students.duckdns.org";
 
-const axiosSnippetService = axios.create({
-    baseURL: BASE_URL + "/api",
-    // baseURL: "http://localhost:8082/api/",
-    headers: {
-        "Content-Type": "application/json",
-    },
-});
-
-const axiosPermissionService = axios.create({
-    // baseURL: "http://localhost:8083/api/user",
-    baseURL: BASE_URL + "/api/user",
+const axiosInstance = axios.create({
+    baseURL: BASE_URL,
     headers: {
         "Content-Type": "application/json",
     },
 });
 
 const setAuthorizationToken = (token: string) => {
-    axiosSnippetService.defaults.headers['Authorization'] = `Bearer ${token}`;
-    axiosPermissionService.defaults.headers['Authorization'] = `Bearer ${token}`;
+    axiosInstance.defaults.headers['Authorization'] = `Bearer ${token}`;
 };
 
-export { axiosSnippetService, axiosPermissionService, setAuthorizationToken };
+export { axiosInstance, setAuthorizationToken };

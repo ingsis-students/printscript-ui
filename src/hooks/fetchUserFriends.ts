@@ -1,10 +1,10 @@
-import {axiosPermissionService} from "./axios.config.ts";
+import {axiosInstance} from "./axios.config.ts";
 import axios from "axios";
 import {PaginatedUsers} from "../utils/users.ts";
 
 const fetchUserFriends = async (name?: string, page?: number, pageSize?: number, email?: string): Promise<PaginatedUsers> => {
     try {
-        const response = await axiosPermissionService.get('/', {
+        const response = await axiosInstance.get('/user/', {
             params: {
                 name,
                 page,

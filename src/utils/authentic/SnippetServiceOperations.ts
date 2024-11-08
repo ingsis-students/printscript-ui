@@ -13,6 +13,7 @@ import {fetchGetLintingRules} from "../../hooks/fetchGetLintingRules.ts";
 import {fetchGetFormattingRules} from "../../hooks/fetchGetFormattingRules.ts";
 import {User} from "@auth0/auth0-react";
 import {axiosInstance} from "../../hooks/axios.config.ts";
+import { fetchModifyFormattingRules } from "../../hooks/fetchModifyFormattingRules.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
@@ -146,9 +147,17 @@ export class SnippetServiceOperations implements SnippetOperations {
         return fetchFileTypes();
     }
 
-    modifyFormatRule(newRules: Rule[]): Promise<Rule[]> {
-        console.log(newRules);
-        throw new Error("Method not implemented.");
+    async modifyFormatRule(newRules: Rule[]): Promise<Rule[]> {
+        const {modifyRules} = fetchModifyFormattingRules();
+        try {
+            return await modifyRules(newRules);
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error("Failed to modify formatting rules: " + error.message);
+            } else {
+                throw new Error("Failed to modify formatting rules: An unexpected error occurred");
+            }
+        }
     }
 
     async modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {

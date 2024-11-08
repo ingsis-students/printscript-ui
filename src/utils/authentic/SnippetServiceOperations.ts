@@ -127,10 +127,11 @@ export class SnippetServiceOperations implements SnippetOperations {
         return response.data;
     }
 
-    removeTestCase(id: string): Promise<string> {
-        console.log(id);
-        throw new Error("Method not implemented.");
+    async removeTestCase(id: string): Promise<string> {
+        const response = await axiosSnippetService.delete(`/tests/${id}`);
+        return response.data;
     }
+
 
     async deleteSnippet(id: string): Promise<string> {
         try {

@@ -2,10 +2,7 @@ import {AUTH0_PASSWORD, AUTH0_USERNAME, BACKEND_URL} from "../../src/utils/const
 
 describe('Add snippet tests', () => {
   beforeEach(() => {
-    cy.loginToAuth0(
-        AUTH0_USERNAME,
-        AUTH0_PASSWORD
-    )
+    cy.loginToAuth0(AUTH0_USERNAME, AUTH0_PASSWORD)
   })
   it('Can add snippets manually', () => {
     cy.visit("/")

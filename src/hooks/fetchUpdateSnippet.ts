@@ -1,11 +1,11 @@
 import {Snippet} from "../utils/snippet.ts";
-import {axiosSnippetService} from "./axios.config.ts";
+import {axiosInstance} from "./axios.config.ts";
 import axios from "axios";
 
 
 const fetchUpdateSnippet = async (id: string, content: string): Promise<Snippet> => {
     try {
-        const response = await axiosSnippetService.put(`/snippets/${id}`, {content})
+        const response = await axiosInstance.put(`/snippets/${id}`, {content})
 
         return response.data as Snippet;
     } catch (error) {

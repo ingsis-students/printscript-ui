@@ -12,7 +12,7 @@ import {fetchModifyLintingRules} from "../../hooks/fetchModifyLintingRules.ts";
 import {fetchGetLintingRules} from "../../hooks/fetchGetLintingRules.ts";
 import {fetchGetFormattingRules} from "../../hooks/fetchGetFormattingRules.ts";
 import {User} from "@auth0/auth0-react";
-import {axiosPermissionService, axiosSnippetService} from "../../hooks/axios.config.ts";
+import {axiosInstance} from "../../hooks/axios.config.ts";
 import {fetchUpdateSnippet} from "../../hooks/fetchUpdateSnippet.ts";
 import {fetchUserFriends} from "../../hooks/fetchUserFriends.ts";
 import {fetchShareSnippet} from "../../hooks/fetchShareSnippet.ts";
@@ -27,7 +27,7 @@ export class SnippetServiceOperations implements SnippetOperations {
 
     async listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
         const userId = this.user?.sub
-        const response = await axiosSnippetService('/snippets/user', {
+        const response = await axiosInstance('/snippets/user', {
             params: {
                 page,
                 pageSize,
@@ -70,7 +70,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async getUserById(id: string): Promise<User> {
-        const user = await axiosPermissionService.get(`/get/${id}`);
+        const user = await axiosInstance.get(`/user/get/${id}`);
         if (user) {
             return user.data;
         } else {
@@ -114,7 +114,7 @@ export class SnippetServiceOperations implements SnippetOperations {
             throw new Error("For what snippet id you want the tests?");
         }
 
-        const response = await axiosSnippetService.get(`tests/snippet/${snippetId}`);
+        const response = await axiosInstance.get(`tests/snippet/${snippetId}`);
         return Array.isArray(response.data) ? response.data : [];
     }
 
@@ -125,19 +125,19 @@ export class SnippetServiceOperations implements SnippetOperations {
         if (!snippetId) {
             throw new Error("Test case must have a snippet id");
         }
-        const response = await axiosSnippetService.post(`tests/snippet/${snippetId}`, testCase);
+        const response = await axiosInstance.post(`tests/snippet/${snippetId}`, testCase);
         return response.data;
     }
 
     async removeTestCase(id: string): Promise<string> {
-        const response = await axiosSnippetService.delete(`/tests/${id}`);
+        const response = await axiosInstance.delete(`/tests/${id}`);
         return response.data;
     }
 
 
     async deleteSnippet(id: string): Promise<string> {
         try {
-            await axiosSnippetService.post(`/snippets/delete/${id}`);
+            await axiosInstance.post(`/snippets/delete/${id}`);
             return `Snippet of id: ${id} deleted successfully`;
         } catch (error) {
             if (error instanceof Error) {

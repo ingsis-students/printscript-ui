@@ -1,12 +1,12 @@
 import {User} from "@auth0/auth0-react";
 import axios from "axios";
-import {axiosPermissionService} from "./axios.config.ts";
+import {axiosInstance} from "./axios.config.ts";
 
 
 export const fetchCreateUser = async (email: string): Promise<User> => {
 
     try {
-        const response = await axiosPermissionService.post<User>("/", {email})
+        const response = await axiosInstance.post<User>("/user/", {email})
 
         return response.data;
     } catch (error) {

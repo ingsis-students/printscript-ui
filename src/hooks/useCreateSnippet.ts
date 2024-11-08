@@ -1,6 +1,6 @@
 import axios from "axios";
 import {Snippet} from "../utils/snippet.ts";
-import {axiosSnippetService} from "./axios.config.ts";
+import {axiosInstance} from "./axios.config.ts";
 
 export const useCreateSnippet = async (
     name: string,
@@ -9,7 +9,7 @@ export const useCreateSnippet = async (
     ownerEmail?: string
 ): Promise<Snippet> => {
     try {
-        const response = await axiosSnippetService.post("/snippets/", {name, content, languageId, owner: ownerEmail});
+        const response = await axiosInstance.post("/snippets/", {name, content, languageId, owner: ownerEmail});
 
         return {
             id: response.data.id,

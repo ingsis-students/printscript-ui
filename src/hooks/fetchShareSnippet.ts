@@ -1,4 +1,4 @@
-import {axiosSnippetService} from "./axios.config.ts";
+import {axiosInstance} from "./axios.config.ts";
 import {Snippet} from "../utils/snippet.ts";
 import axios from "axios";
 import {toast} from "react-toastify";
@@ -6,7 +6,7 @@ import {toast} from "react-toastify";
 
 const fetchShareSnippet = async (snippetId: string, userEmail: string | undefined, ownerEmail: string | undefined): Promise<Snippet> => {
     try {
-        return await axiosSnippetService.post(`/snippets/share/${snippetId}`, {fromEmail: ownerEmail, toEmail: userEmail});
+        return await axiosInstance.post(`/snippets/share/${snippetId}`, {fromEmail: ownerEmail, toEmail: userEmail});
     } catch (error) {
 
         if (axios.isAxiosError(error)) {

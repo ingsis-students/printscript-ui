@@ -133,8 +133,15 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
                             </Tooltip>
                         </Box>
                     ) : (
-                        <Typography variant="subtitle1" padding={1} color={"gray"}
-                                    sx={{fontStyle: 'italic'}}>{"Snippet is read only"}</Typography>
+                        <Box display="flex" flexDirection="row" gap="8px" padding="8px">
+                            <Typography variant="subtitle1" padding={1} color={"gray"}
+                                        sx={{fontStyle: 'italic'}}>{"Snippet is read only"}</Typography>
+                            <Tooltip title={"Test"}>
+                                <IconButton onClick={() => setTestModalOpened(true)}>
+                                    <BugReport/>
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
                     )}
                     <Box display={"flex"} gap={2}>
                         <Bòx flex={1} height={"fit-content"} overflow={"none"} minHeight={"500px"} bgcolor={'black'}

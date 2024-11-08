@@ -108,7 +108,6 @@ export const useTestSnippet = () => {
     )
 }
 
-
 export const useGetFormatRules = () => {
     const snippetOperations = useSnippetsOperations()
 
@@ -124,13 +123,11 @@ export const useModifyFormatRules = ({onSuccess}: { onSuccess: () => void }) => 
     );
 }
 
-
 export const useGetLintingRules = () => {
     const snippetOperations = useSnippetsOperations()
 
     return useQuery<Rule[], Error>('lintingRules', () => snippetOperations.getLintingRules());
 }
-
 
 export const useModifyLintingRules = ({onSuccess}: { onSuccess: () => void }) => {
     const snippetOperations = useSnippetsOperations()

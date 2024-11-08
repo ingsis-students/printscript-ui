@@ -26,11 +26,13 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
-        const response = await axiosSnippetService('/snippets', {
+        const userId = this.user?.sub
+        const response = await axiosSnippetService('/snippets/user', {
             params: {
                 page,
                 pageSize,
                 snippetName,
+                userId
             },
         });
 

@@ -12,8 +12,7 @@ const useAuthCallback = () => {
     const handleAuth = useCallback(async (email: string) => {
         if (isAuthenticated) {
             try {
-                const token = await getAccessTokenSilently();
-                const user = await fetchCreateUser(token, email);
+                const user = await fetchCreateUser(email);
                 if (user) {
                     console.log("getting default rules with token:" + token)
                     await fetchGetDefaultRules(token);

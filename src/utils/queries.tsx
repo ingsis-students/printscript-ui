@@ -108,7 +108,6 @@ export const useTestSnippet = () => {
     )
 }
 
-
 export const useGetFormatRules = () => {
     const snippetOperations = useSnippetsOperations()
 
@@ -124,13 +123,11 @@ export const useModifyFormatRules = ({onSuccess}: { onSuccess: () => void }) => 
     );
 }
 
-
 export const useGetLintingRules = () => {
     const snippetOperations = useSnippetsOperations()
 
     return useQuery<Rule[], Error>('lintingRules', () => snippetOperations.getLintingRules());
 }
-
 
 export const useModifyLintingRules = ({onSuccess}: { onSuccess: () => void }) => {
     const snippetOperations = useSnippetsOperations()
@@ -160,9 +157,14 @@ export const useDeleteSnippet = ({onSuccess}: { onSuccess: () => void }) => {
     );
 }
 
-
 export const useGetFileTypes = () => {
     const snippetOperations = useSnippetsOperations()
 
     return useQuery<FileType[], Error>('fileTypes', () => snippetOperations.getFileTypes());
+}
+
+export const useCheckIfOwner = (email: string | undefined) => {
+    const {user} = useAuth0();
+    if (!email || !user) return false;
+    return user.email === email
 }

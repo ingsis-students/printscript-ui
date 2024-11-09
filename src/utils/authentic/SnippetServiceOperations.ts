@@ -14,6 +14,9 @@ import {fetchGetFormattingRules} from "../../hooks/fetchGetFormattingRules.ts";
 import {User} from "@auth0/auth0-react";
 import {axiosInstance} from "../../hooks/axios.config.ts";
 import { fetchModifyFormattingRules } from "../../hooks/fetchModifyFormattingRules.ts";
+import {fetchUpdateSnippet} from "../../hooks/fetchUpdateSnippet.ts";
+import {fetchUserFriends} from "../../hooks/fetchUserFriends.ts";
+import {fetchShareSnippet} from "../../hooks/fetchShareSnippet.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
@@ -24,11 +27,13 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 
     async listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets> {
-        const response = await axiosInstance('/snippets', {
+        const userId = this.user?.sub
+        const response = await axiosInstance('/snippets/user', {
             params: {
                 page,
                 pageSize,
                 snippetName,
+                userId
             },
         });
 
@@ -47,30 +52,31 @@ export class SnippetServiceOperations implements SnippetOperations {
     };
 
     async getSnippetById(id: string): Promise<Snippet | undefined> {
-        try {
-            return await fetchSnippetById(id);
-        } catch (error) {
-            if (error instanceof Error) {
-                throw new Error("Failed to fetch snippet: " + error.message);
-            } else {
-                throw new Error("Failed to fetch snippet: An unexpected error occurred");
-            }
+        return await fetchSnippetById(id);
+    }
+
+    async updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<Snippet> {
+        return await fetchUpdateSnippet(id, updateSnippet.content);
+    }
+
+    async getUserFriends(name?: string | undefined, page?: number | undefined, pageSize?: number | undefined): Promise<PaginatedUsers> {
+        const email = this.user?.email;
+        return await fetchUserFriends(name, page, pageSize, email);
+    }
+
+    async shareSnippet(snippetId: string, userId: string): Promise<Snippet> {
+        const ownerEmail = this.user?.email;
+        const user = await this.getUserById(userId);
+        return await fetchShareSnippet(snippetId, user.email, ownerEmail);
+    }
+
+    async getUserById(id: string): Promise<User> {
+        const user = await axiosInstance.get(`/user/get/${id}`);
+        if (user) {
+            return user.data;
+        } else {
+            throw new Error("User not found");
         }
-    }
-
-    updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<Snippet> {
-        console.log(id, updateSnippet);
-        throw new Error("Method not implemented.");
-    }
-
-    getUserFriends(name?: string | undefined, page?: number | undefined, pageSize?: number | undefined): Promise<PaginatedUsers> {
-        console.log(name, page, pageSize);
-        throw new Error("Method not implemented.");
-    }
-
-    shareSnippet(snippetId: string, userId: string): Promise<Snippet> {
-        console.log(snippetId, userId);
-        throw new Error("Method not implemented.");
     }
 
     async getFormatRules(): Promise<Rule[]> {
@@ -99,14 +105,18 @@ export class SnippetServiceOperations implements SnippetOperations {
         }
     }
 
-    getTestCases(snippetId: string): Promise<TestCase[]> {
-        console.log(snippetId);
-        throw new Error("Method not implemented.");
-    }
-
     formatSnippet(snippet: string): Promise<string> {
         console.log(snippet);
         throw new Error("Method not implemented.");
+    }
+
+    async getTestCases(snippetId: string): Promise<TestCase[]> {
+        if (!snippetId) {
+            throw new Error("For what snippet id you want the tests?");
+        }
+
+        const response = await axiosInstance.get(`tests/snippet/${snippetId}`);
+        return Array.isArray(response.data) ? response.data : [];
     }
 
     async postTestCase(testCase: Partial<TestCase>, snippetId: string): Promise<TestCase> {
@@ -116,14 +126,15 @@ export class SnippetServiceOperations implements SnippetOperations {
         if (!snippetId) {
             throw new Error("Test case must have a snippet id");
         }
-        const response = await axiosInstance.post(`test/snippets/${snippetId}`, testCase);
+        const response = await axiosInstance.post(`tests/snippet/${snippetId}`, testCase);
         return response.data;
     }
 
-    removeTestCase(id: string): Promise<string> {
-        console.log(id);
-        throw new Error("Method not implemented.");
+    async removeTestCase(id: string): Promise<string> {
+        const response = await axiosInstance.delete(`/tests/${id}`);
+        return response.data;
     }
+
 
     async deleteSnippet(id: string): Promise<string> {
         try {
@@ -138,9 +149,12 @@ export class SnippetServiceOperations implements SnippetOperations {
         }
     }
 
-    testSnippet(testCase: Partial<TestCase>): Promise<TestCaseResult> {
-        console.log(testCase);
-        throw new Error("Method not implemented.");
+    async testSnippet(testCase: Partial<TestCase>): Promise<TestCaseResult> {
+        if (!testCase.id) {
+            throw new Error("Test case ID is required");
+        }
+        const response = await axiosInstance.post<string>(`/tests/${testCase.id}/run`);
+        return response.data as TestCaseResult;
     }
 
     async getFileTypes(): Promise<FileType[]> {
@@ -181,7 +195,8 @@ const mapToSnippet = (snippet: SnippetResponse): Snippet => ({
     language: snippet.language,
     extension: snippet.extension,
     compliance: (snippet.compilance as ComplianceEnum) || 'pending',
-    author: snippet.owner
+    author: snippet.owner,
+    owner: snippet.owner
 });
 
 type SnippetResponse = {

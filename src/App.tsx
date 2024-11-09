@@ -7,6 +7,8 @@ import RulesScreen from "./screens/Rules.tsx";
 import {withAuthenticationRequired} from "@auth0/auth0-react";
 import AuthCallback from "./components/auth/AuthCallback.tsx";
 import {TokenProvider} from "./contexts/TokenProvider.tsx";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const router = createBrowserRouter([
     {
@@ -29,6 +31,7 @@ const App = () => {
         <QueryClientProvider client={queryClient}>
             <TokenProvider>
                 <RouterProvider router={router}/>
+                <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnHover draggable />
             </TokenProvider>
         </QueryClientProvider>
     );

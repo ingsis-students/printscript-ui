@@ -1,7 +1,10 @@
 import axios from "axios";
 
+const BASE_URL = "http://localhost:80/api";
+// const BASE_URL= "https://ingsis-students.duckdns.org";
+
 const axiosInstance = axios.create({
-    baseURL: "http://localhost:8082/api",
+    baseURL: BASE_URL,
     headers: {
         "Content-Type": "application/json",
     },

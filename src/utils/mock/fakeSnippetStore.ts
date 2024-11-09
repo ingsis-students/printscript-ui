@@ -13,6 +13,7 @@ const INITIAL_SNIPPETS: Snippet[] = [
     content: 'let a : number = 5;\nlet b : number = 5;\n\nprintln(a + b);',
     compliance: 'pending',
     author: 'John Doe',
+    owner: 'John Doe',
     language: 'printscript',
     extension: 'prs'
   },
@@ -22,6 +23,7 @@ const INITIAL_SNIPPETS: Snippet[] = [
     content: 'let a : number = 5;\nlet b : number = 5;\n\nprintln(a + b);',
     compliance: 'not-compliant',
     author: 'John Doe',
+    owner: 'John Doe',
     language: 'printscript',
     extension: 'prs'
   },
@@ -31,6 +33,7 @@ const INITIAL_SNIPPETS: Snippet[] = [
     content: 'let a : number = 5;\nlet b : number = 5;\n\nprintln(a + b);',
     compliance: 'compliant',
     author: 'John Doe',
+    owner: 'John Doe',
     language: 'printscript',
     extension: 'prs'
   }
@@ -189,6 +192,7 @@ export class FakeSnippetStore {
       id,
       compliance: 'compliant' as ComplianceEnum,
       author: 'yo',
+      owner: 'yo',
       ...createSnippet
     }
     this.snippetMap.set(id, newSnippet)

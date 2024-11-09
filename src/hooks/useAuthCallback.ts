@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useCallback } from "react";
 import { fetchCreateUser } from "./fetchCreateUser.ts";
+import {fetchGetDefaultRules} from "./fetchGetDefaultRules.ts";
 
 const useAuthCallback = () => {
     const { isAuthenticated, isLoading, loginWithRedirect, getAccessTokenSilently, user } = useAuth0();
@@ -13,6 +14,8 @@ const useAuthCallback = () => {
             try {
                 const user = await fetchCreateUser(email);
                 if (user) {
+                    // console.log("getting default rules with token:" + token)
+                    await fetchGetDefaultRules();
                     navigate("/");
                 }
             } catch (error) {

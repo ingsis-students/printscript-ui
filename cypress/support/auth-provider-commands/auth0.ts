@@ -3,8 +3,7 @@ export function loginViaAuth0Ui(username: string, password: string) {
     cy.visit('/')
 
     // Login on Auth0.
-    cy.origin(
-        Cypress.env('VITE_AUTH0_DOMAIN'),
+    cy.origin("https://students-ingsis.us.auth0.com",
         {args: {username, password}},
         ({username, password}) => {
             cy.get('input#username').type(username)
@@ -16,7 +15,3 @@ export function loginViaAuth0Ui(username: string, password: string) {
     // Ensure Auth0 has redirected us back to the RWA.
     cy.url().should('equal', 'http://localhost/')
 }
-
-
-
-

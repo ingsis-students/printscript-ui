@@ -6,6 +6,7 @@ describe('Add snippet tests', () => {
   })
   it('Can add snippets manually', () => {
     cy.visit("/")
+
     cy.intercept('POST', BACKEND_URL+"/snippets", (req) => {
       req.reply((res) => {
         expect(res.body).to.include.keys("id","name","content","language")

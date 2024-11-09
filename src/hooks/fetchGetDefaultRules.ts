@@ -1,16 +1,8 @@
-import axios from "axios";
+import {axiosInstance} from "./axios.config.ts";
 
-export const fetchGetDefaultRules = async (token: string): Promise<void> => {
+export const fetchGetDefaultRules = async (): Promise<void> => {
     try {
-        await axios.get(
-            "http://localhost:8082/api/snippets/rules/default",
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
+        await axiosInstance.get("/snippets/rules/default");
         console.log("Default rules set successfully.");
     } catch (error) {
         console.error("Failed to set default rules:", error);

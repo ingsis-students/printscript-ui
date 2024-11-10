@@ -190,7 +190,7 @@ export class FakeSnippetStore {
     const id = uuid();
     const newSnippet = {
       id,
-      compliance: 'compliant' as ComplianceEnum,
+      status: 'compliant' as ComplianceEnum,
       author: 'yo',
       owner: 'yo',
       ...createSnippet

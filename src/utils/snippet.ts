@@ -26,7 +26,7 @@ export type Snippet = CreateSnippet & {
 } & SnippetStatus
 
 type SnippetStatus = {
-  compliance: ComplianceEnum;
+  status: ComplianceEnum;
   author: string;
   owner: string;
 }

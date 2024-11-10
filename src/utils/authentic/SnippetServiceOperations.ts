@@ -17,6 +17,7 @@ import { fetchModifyFormattingRules } from "../../hooks/fetchModifyFormattingRul
 import {fetchUpdateSnippet} from "../../hooks/fetchUpdateSnippet.ts";
 import {fetchUserFriends} from "../../hooks/fetchUserFriends.ts";
 import {fetchShareSnippet} from "../../hooks/fetchShareSnippet.ts";
+import fetchFormatSnippet from "../../hooks/fetchFormatSnippet.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
@@ -105,9 +106,8 @@ export class SnippetServiceOperations implements SnippetOperations {
         }
     }
 
-    formatSnippet(snippet: string): Promise<string> {
-        console.log(snippet);
-        throw new Error("Method not implemented.");
+    async formatSnippet(snippet: string): Promise<string> {
+        return await fetchFormatSnippet(snippet);
     }
 
     async getTestCases(snippetId: string): Promise<TestCase[]> {

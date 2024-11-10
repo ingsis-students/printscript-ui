@@ -6,7 +6,9 @@ import {toast} from "react-toastify";
 
 const fetchShareSnippet = async (snippetId: string, userEmail: string | undefined, ownerEmail: string | undefined): Promise<Snippet> => {
     try {
-        return await axiosInstance.post(`/snippets/share/${snippetId}`, {fromEmail: ownerEmail, toEmail: userEmail});
+        const response = await axiosInstance.post(`/snippets/share/${snippetId}`, { fromEmail: ownerEmail, toEmail: userEmail });
+        toast.success('Snippet shared successfully!');
+        return response.data;
     } catch (error) {
 
         if (axios.isAxiosError(error)) {

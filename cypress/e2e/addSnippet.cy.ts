@@ -1,13 +1,15 @@
-import {AUTH0_PASSWORD, AUTH0_USERNAME, BACKEND_URL} from "../../src/utils/constants";
+import {AUTH0_PASSWORD, AUTH0_USERNAME, BACKEND_URL, FRONTEND_URL} from "../../src/utils/constants";
 
 describe('Add snippet tests', () => {
   beforeEach(() => {
     cy.loginToAuth0(AUTH0_USERNAME, AUTH0_PASSWORD)
   })
   it('Can add snippets manually', () => {
-    cy.visit("/")
+    cy.visit(FRONTEND_URL)
 
-    cy.intercept('POST', BACKEND_URL+"/snippets", (req) => {
+    cy.wait(10000)
+
+    cy.intercept('POST', BACKEND_URL + "/snippets/", (req) => {
       req.reply((res) => {
         expect(res.body).to.include.keys("id","name","content","language")
         expect(res.statusCode).to.eq(200);
@@ -29,8 +31,11 @@ describe('Add snippet tests', () => {
   })
 
   it('Can add snippets via file', () => {
-    cy.visit("/")
-    cy.intercept('POST', BACKEND_URL+"/snippets", (req) => {
+    cy.visit(FRONTEND_URL)
+
+    cy.wait(10000) // Added time for page to load
+
+    cy.intercept('POST', BACKEND_URL + "/snippets/", (req) => {
       req.reply((res) => {
         expect(res.body).to.include.keys("id","name","content","language")
         expect(res.statusCode).to.eq(200);

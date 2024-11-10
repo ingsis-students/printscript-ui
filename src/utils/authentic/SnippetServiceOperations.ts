@@ -194,7 +194,7 @@ const mapToSnippet = (snippet: SnippetResponse): Snippet => ({
     content: snippet.content,
     language: snippet.language,
     extension: snippet.extension,
-    compliance: (snippet.compilance as ComplianceEnum) || 'pending',
+    status: (snippet.compilance as ComplianceEnum) || 'pending',
     author: snippet.owner,
     owner: snippet.owner
 });

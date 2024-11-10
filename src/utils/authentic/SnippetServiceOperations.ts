@@ -13,9 +13,11 @@ import {fetchGetLintingRules} from "../../hooks/fetchGetLintingRules.ts";
 import {fetchGetFormattingRules} from "../../hooks/fetchGetFormattingRules.ts";
 import {User} from "@auth0/auth0-react";
 import {axiosInstance} from "../../hooks/axios.config.ts";
+import { fetchModifyFormattingRules } from "../../hooks/fetchModifyFormattingRules.ts";
 import {fetchUpdateSnippet} from "../../hooks/fetchUpdateSnippet.ts";
 import {fetchUserFriends} from "../../hooks/fetchUserFriends.ts";
 import {fetchShareSnippet} from "../../hooks/fetchShareSnippet.ts";
+import fetchFormatSnippet from "../../hooks/fetchFormatSnippet.ts";
 
 
 export class SnippetServiceOperations implements SnippetOperations {
@@ -104,9 +106,8 @@ export class SnippetServiceOperations implements SnippetOperations {
         }
     }
 
-    formatSnippet(snippet: string): Promise<string> {
-        console.log(snippet);
-        throw new Error("Method not implemented.");
+    async formatSnippet(snippet: string): Promise<string> {
+        return await fetchFormatSnippet(snippet);
     }
 
     async getTestCases(snippetId: string): Promise<TestCase[]> {
@@ -160,9 +161,17 @@ export class SnippetServiceOperations implements SnippetOperations {
         return fetchFileTypes();
     }
 
-    modifyFormatRule(newRules: Rule[]): Promise<Rule[]> {
-        console.log(newRules);
-        throw new Error("Method not implemented.");
+    async modifyFormatRule(newRules: Rule[]): Promise<Rule[]> {
+        const {modifyRules} = fetchModifyFormattingRules();
+        try {
+            return await modifyRules(newRules);
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error("Failed to modify formatting rules: " + error.message);
+            } else {
+                throw new Error("Failed to modify formatting rules: An unexpected error occurred");
+            }
+        }
     }
 
     async modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {

@@ -5,7 +5,7 @@ import {axiosInstance} from "./axios.config.ts";
 export function fetchGetFormattingRules() {
     const getFormattingRules = async (): Promise<Rule[]> => {
         try {
-            const response = await axiosInstance.get("/format/rules")
+            const response = await axiosInstance.get("snippets/format/rules")
             return response.data as Rule[];
         } catch (error) {
             if (axios.isAxiosError(error)) {

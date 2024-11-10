@@ -58,6 +58,7 @@ const FormattingRulesList = () => {
         {
           isLoading || isLoadingMutate ?  <Typography style={{height: 80}}>Loading...</Typography> :
           rules?.map((rule) => {
+          const isNonConfigurable = ["OnlyOneSpacePermited", "NewLineAfterSemiColon", "SpaceAfterAndBeforeOperators", "NewLineAfterBrace"].includes(rule.name);
           return (
             <ListItem
               key={rule.name}
@@ -68,10 +69,11 @@ const FormattingRulesList = () => {
                 edge="start"
                 checked={rule.isActive}
                 disableRipple
+                disabled={isNonConfigurable}
                 onChange={toggleRule(rule)}
               />
               <ListItemText primary={rule.name} />
-              {typeof rule.value === 'number' ?
+              {!isNonConfigurable && (typeof rule.value === 'number' ?
                 (<TextField
                   type="number"
                   variant={"standard"}
@@ -83,7 +85,7 @@ const FormattingRulesList = () => {
                     value={rule.value}
                     onChange={e => handleValueChange(rule, e.target.value)}
                   />) : null
-              }
+              )}
             </ListItem>
           )
         })}

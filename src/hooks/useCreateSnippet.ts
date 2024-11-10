@@ -17,7 +17,7 @@ export const useCreateSnippet = async (
             content: response.data.content,
             language: response.data.language,
             extension: response.data.extension,
-            status: response.data.compilance,
+            status: response.data.status,
             author: response.data.owner
         } as Snippet
     } catch (error) {

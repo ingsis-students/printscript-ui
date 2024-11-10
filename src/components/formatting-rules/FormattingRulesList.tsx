@@ -58,7 +58,7 @@ const FormattingRulesList = () => {
         {
           isLoading || isLoadingMutate ?  <Typography style={{height: 80}}>Loading...</Typography> :
           rules?.map((rule) => {
-          const isNonConfigurable = ["OnlyOneSpacePermited", "NewLineAfterSemiColon", "SpaceAfterAndBeforeOperators", "NewLineAfterBrace"].includes(rule.name);
+          const isNonConfigurable = ["OnlyOneSpacePermitted", "NewLineAfterSemicolon", "SpaceAfterAndBeforeOperators", "NewLineAfterBrace"].includes(rule.name);
           return (
             <ListItem
               key={rule.name}

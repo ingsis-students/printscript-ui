@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {TestCase} from "../../types/TestCase.ts";
 import {Autocomplete, Box, Button, Chip, TextField, Typography} from "@mui/material";
 import {BugReport, Delete, Save} from "@mui/icons-material";
@@ -17,6 +17,10 @@ export const TabPanel = ({value, index, test: initialTest, setTestCase, removeTe
 
     const {mutateAsync: testSnippet, data} = useTestSnippet();
 
+    // Resetea testData cuando initialTest o index cambien
+    useEffect(() => {
+        setTestData(initialTest ?? { input: [], output: [] });
+    }, [initialTest, index]);
 
     return (
         <div
@@ -30,8 +34,11 @@ export const TabPanel = ({value, index, test: initialTest, setTestCase, removeTe
                 <Box sx={{px: 3}} display="flex" flexDirection="column" gap={2}>
                     <Box display="flex" flexDirection="column" gap={1}>
                         <Typography fontWeight="bold">Name</Typography>
-                        <TextField size="small" value={testData?.name}
-                                   onChange={(e) => setTestData({...testData, name: e.target.value})}/>
+                        <TextField
+                            size="small"
+                            value={testData?.name ?? ""}
+                            onChange={(e) => setTestData({...testData, name: e.target.value})}
+                        />
                     </Box>
                     <Box display="flex" flexDirection="column" gap={1}>
                         <Typography fontWeight="bold">Input</Typography>
@@ -48,9 +55,7 @@ export const TabPanel = ({value, index, test: initialTest, setTestCase, removeTe
                                 ))
                             }
                             renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                />
+                                <TextField {...params} />
                             )}
                             options={[]}
                         />
@@ -70,30 +75,26 @@ export const TabPanel = ({value, index, test: initialTest, setTestCase, removeTe
                                 ))
                             }
                             renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                />
+                                <TextField {...params} />
                             )}
                             options={[]}
                         />
                     </Box>
                     <Box display="flex" flexDirection="row" gap={1}>
-                        {
-                            (testData?.id && removeTestCase) && (
-                            <Button onClick={() => removeTestCase(testData?.id ?? "")} variant={"outlined"} color={"error"}
-                                    startIcon={<Delete/>}>
+                        {testData?.id && removeTestCase && (
+                            <Button onClick={() => removeTestCase(testData.id ?? "")} variant={"outlined"} color={"error"} startIcon={<Delete />}>
                                 Remove
-                            </Button>)
-                        }
-                        <Button disabled={!testData?.name} onClick={() => setTestCase(testData ?? {})} variant={"outlined"} startIcon={<Save/>}>
+                            </Button>
+                        )}
+                        <Button disabled={!testData?.name} onClick={() => setTestCase(testData ?? {})} variant={"outlined"} startIcon={<Save />}>
                             Save
                         </Button>
-                        <Button onClick={() => testSnippet(testData ?? {})} variant={"contained"} startIcon={<BugReport/>}
-                                disableElevation>
-                            Test
-                        </Button>
-                        {data && (data === "success" ? <Chip label="Pass" color="success"/> :
-                            <Chip label="Fail" color="error"/>)}
+                        {testData?.id && (
+                            <Button onClick={() => testSnippet(testData ?? {})} variant={"contained"} startIcon={<BugReport />} disableElevation>
+                                Test
+                            </Button>
+                        )}
+                        {data && (data === "success" ? <Chip label="Pass" color="success" /> : <Chip label="Fail" color="error" />)}
                     </Box>
                 </Box>
             )}

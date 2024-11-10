@@ -58,7 +58,7 @@ describe('Home', () => {
       url: BACKEND_URL + '/snippets/', // Adjust if you have a different base URL configured in Cypress
       body: snippetData,
       headers: {
-        Authorization: `Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkVyTjdBZndSS0JqZ0sxdWw1ci0xXyJ9.eyJpc3MiOiJodHRwczovL3N0dWRlbnRzLWluZ3Npcy51cy5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjcyZTM3NzIyMmQ3OTZjNjU0YzZlNmM4IiwiYXVkIjpbImh0dHBzOi8vc3R1ZGVudHMuaW5nc2lzLmNvbS9hcGkiLCJodHRwczovL3N0dWRlbnRzLWluZ3Npcy51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNzMxMjc0MzQyLCJleHAiOjE3MzEzNjA3NDIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJhenAiOiJIM0k4Nkt0aUhXTzdVOG5nOUppZmRza0ZGUkNPMFVXSSIsInBlcm1pc3Npb25zIjpbXX0.NNeUYZnh90YrJMFPLl2ASanz0KnLeB78bEhhAWkhKH5RXCcfKbxH4YqA2Gj0WJbExMNirDAtu7kQQnHYXMzO0jm97oOBKtV5-OAnUdxS2FqEzVcAt9TUStw6QsZ3h9flbzwSAl_uYBvfe2a4oslsJBxdZv2d_u8VGf6JEMwiCgcsKOqnEGNr6MzpmD_8ShrteInE4yYjWy-wCGNzRsOJLpf9e7j-HVFYZWFTRLv3kVtwGKGWJhmToSNODgWcoVS65Vh8y9jSxGIck6a92J_6cTcj_OrXQAIKNkaCBFzPioIWdldak9Ea4Xd4LqDWMqXp7XDpWH1ZRSwnon8IXhk4Qw`
+        Authorization: `Bearer ${localStorage.getItem('authAccessToken')}`
       },
       failOnStatusCode: false // Optional: set to true if you want the test to fail on non-2xx status codes
     }).then((response) => {

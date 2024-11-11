@@ -28,7 +28,7 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
     onClose: () => void,
     defaultSnippet?: CreateSnippetWithLang
 }) => {
-    const [language, setLanguage] = useState(defaultSnippet?.language ?? "printscript");
+    const [languageId, setLanguageId] = useState(defaultSnippet?.language ?? "1");
     const [code, setCode] = useState(defaultSnippet?.content ?? "");
     const [snippetName, setSnippetName] = useState(defaultSnippet?.name ?? "")
     const [errors, setErrors] = useState<string[]>([]);
@@ -40,13 +40,14 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
     const handleCreateSnippet = async () => {
         setErrors([]);
 
-        const selectedFileType = fileTypes?.find((f) => f.language === language);
+        const selectedFileType = fileTypes?.find((f) => f.id === languageId);
 
         const newSnippet: CreateSnippet = {
             name: snippetName,
             content: code,
-            language: selectedFileType?.id ?? "1",
-            extension: selectedFileType?.extension ?? "ps"
+            language: selectedFileType?.id ?? "1", //TODO RARI ESTA VARIABLE
+            extension: selectedFileType?.extension ?? "ps",
+            version: selectedFileType?.version ?? "1.1"
         };
 
         try {
@@ -70,7 +71,7 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
     useEffect(() => {
         if (defaultSnippet) {
             setCode(defaultSnippet?.content)
-            setLanguage(defaultSnippet?.language)
+            setLanguageId(defaultSnippet?.language);
             setSnippetName(defaultSnippet?.name)
         }
     }, [defaultSnippet]);
@@ -78,86 +79,86 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
     return (
         <ModalWrapper open={open} onClose={handleClose}>
             <Box sx={{ maxHeight: '100vh', p: 2 }}>
-            {
-                <Box sx={{display: 'flex', flexDirection: "row", justifyContent: "space-between"}}>
-                    <Typography id="modal-modal-title" variant="h5" component="h2"
-                                sx={{display: 'flex', alignItems: 'center', pb: '16px'}}>
-                        Add Snippet
-                    </Typography>
-                    <Button disabled={!snippetName || !code || !language || loadingSnippet} variant="contained"
-                            disableRipple
-                            sx={{boxShadow: 0}} onClick={handleCreateSnippet}>
-                        <Box pr={1} display={"flex"} alignItems={"center"} justifyContent={"center"}>
-                            {loadingSnippet ? <CircularProgress size={24}/> : <Save/>}
-                        </Box>
-                        Save Snippet
-                    </Button>
+                {
+                    <Box sx={{display: 'flex', flexDirection: "row", justifyContent: "space-between"}}>
+                        <Typography id="modal-modal-title" variant="h5" component="h2"
+                                    sx={{display: 'flex', alignItems: 'center', pb: '16px'}}>
+                            Add Snippet
+                        </Typography>
+                        <Button disabled={!snippetName || !code || !languageId || loadingSnippet} variant="contained"
+                                disableRipple
+                                sx={{boxShadow: 0}} onClick={handleCreateSnippet}>
+                            <Box pr={1} display={"flex"} alignItems={"center"} justifyContent={"center"}>
+                                {loadingSnippet ? <CircularProgress size={24}/> : <Save/>}
+                            </Box>
+                            Save Snippet
+                        </Button>
+                    </Box>
+                }
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    pb: '16px'
+                }}>
+                    <InputLabel htmlFor="name">Name</InputLabel>
+                    <Input onChange={e => setSnippetName(e.target.value)} value={snippetName} id="name"
+                           sx={{width: '50%'}}/>
                 </Box>
-            }
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                pb: '16px'
-            }}>
-                <InputLabel htmlFor="name">Name</InputLabel>
-                <Input onChange={e => setSnippetName(e.target.value)} value={snippetName} id="name"
-                       sx={{width: '50%'}}/>
-            </Box>
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                pb: '16px'
-            }}>
-                <InputLabel htmlFor="name">Language</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={language}
-                    label="Age"
-                    onChange={(e: SelectChangeEvent<string>) => setLanguage(e.target.value)}
-                    sx={{width: '50%'}}
-                >
-                    {(Array.isArray(fileTypes) && fileTypes.length > 0) ? (
-                        fileTypes.map((x) => (
-                            x && x.language ? (
-                                <MenuItem data-testid={`menu-option-${x.language}`} key={x.language} value={x.language}>
-                                    {capitalize(x.language)}
-                                </MenuItem>
-                            ) : null
-                        ))
-                    ) : (
-                        <MenuItem>No file types accepted</MenuItem>
-                    )}
-                </Select>
-            </Box>
-            <InputLabel>Code Snippet</InputLabel>
-            <Box width={"100%"} sx={{
-                backgroundColor: 'black', color: 'white', borderRadius: "8px",
-            }}>
-                <Editor
-                    value={code}
-                    padding={10}
-                    data-testid={"add-snippet-code-editor"}
-                    onValueChange={(code) => setCode(code)}
-                    highlight={(code) => highlight(code, languages.js, 'javascript')}
-                    style={{
-                        borderRadius: "8px",
-                        overflow: "auto",
-                        minHeight: "300px",
-                        maxHeight: "600px",
-                        width: "100%",
-                        fontFamily: "monospace",
-                        fontSize: 17,
-                    }}
-                />
-            </Box>
-            {errors.length > 0 && (
-                <Box sx={{color: 'red', p: 1}}>
-                    {errors.map((error, idx) => (
-                        <Typography key={idx}>{error}</Typography>
-                    ))}
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    pb: '16px'
+                }}>
+                    <InputLabel htmlFor="name">Language</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={languageId}
+                        label="Age"
+                        onChange={(e: SelectChangeEvent<string>) => setLanguageId(e.target.value)}
+                        sx={{width: '50%'}}
+                    >
+                        {(Array.isArray(fileTypes) && fileTypes.length > 0) ? (
+                            fileTypes.map((x) => (
+                                x && x.language ? (
+                                    <MenuItem data-testid={`menu-option-${x.language}`} key={x.id} value={x.id}>
+                                        {capitalize(x.language)} {x.version}
+                                    </MenuItem>
+                                ) : null
+                            ))
+                        ) : (
+                            <MenuItem>No file types accepted</MenuItem>
+                        )}
+                    </Select>
                 </Box>
-            )}
+                <InputLabel>Code Snippet</InputLabel>
+                <Box width={"100%"} sx={{
+                    backgroundColor: 'black', color: 'white', borderRadius: "8px",
+                }}>
+                    <Editor
+                        value={code}
+                        padding={10}
+                        data-testid={"add-snippet-code-editor"}
+                        onValueChange={(code) => setCode(code)}
+                        highlight={(code) => highlight(code, languages.js, 'javascript')}
+                        style={{
+                            borderRadius: "8px",
+                            overflow: "auto",
+                            minHeight: "300px",
+                            maxHeight: "600px",
+                            width: "100%",
+                            fontFamily: "monospace",
+                            fontSize: 17,
+                        }}
+                    />
+                </Box>
+                {errors.length > 0 && (
+                    <Box sx={{color: 'red', p: 1}}>
+                        {errors.map((error, idx) => (
+                            <Typography key={idx}>{error}</Typography>
+                        ))}
+                    </Box>
+                )}
             </Box>
         </ModalWrapper>
     )

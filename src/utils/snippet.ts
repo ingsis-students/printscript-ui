@@ -13,9 +13,10 @@ export type CreateSnippet = {
   content: string;
   language: string;
   extension: string;
+  version: string;
 }
 
-export type CreateSnippetWithLang = CreateSnippet & { language: string }
+export type CreateSnippetWithLang = CreateSnippet & { language: string, version: string }
 
 export type UpdateSnippet = {
   content: string
@@ -26,7 +27,7 @@ export type Snippet = CreateSnippet & {
 } & SnippetStatus
 
 export type SnippetWithErr = Snippet & {
-    errors: string[]
+  errors: string[]
 }
 
 type SnippetStatus = {

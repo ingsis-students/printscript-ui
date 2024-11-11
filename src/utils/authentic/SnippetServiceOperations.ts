@@ -106,8 +106,8 @@ export class SnippetServiceOperations implements SnippetOperations {
         }
     }
 
-    async formatSnippet(snippet: string): Promise<string> {
-        return await fetchFormatSnippet(snippet);
+    async formatSnippet(id: string, content: string): Promise<string> {
+        return await fetchFormatSnippet(id, content);
     }
 
     async getTestCases(snippetId: string): Promise<TestCase[]> {

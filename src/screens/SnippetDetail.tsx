@@ -115,7 +115,12 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
                             {/*</Tooltip>*/}
                             {/* TODO: we can implement a live mode*/}
                             <Tooltip title={"Format"}>
-                                <IconButton onClick={() => formatSnippet(code)} disabled={isFormatLoading}>
+                                <IconButton onClick={() => {
+                                    if (snippet?.id) {
+                                    formatSnippet({ id: snippet.id, content: code });
+                                    } else {
+                                        console.error("Snippet ID is undefined");
+                                }}} disabled={isFormatLoading}>
                                     <ReadMoreIcon/>
                                 </IconButton>
                             </Tooltip>

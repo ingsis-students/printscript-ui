@@ -1,6 +1,6 @@
 import {SnippetOperations} from '../snippetOperations'
 import {FakeSnippetStore} from './fakeSnippetStore'
-import {CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from '../snippet'
+import {CreateSnippet, PaginatedSnippets, Snippet, SnippetWithErr, UpdateSnippet} from '../snippet'
 import autoBind from 'auto-bind'
 import {PaginatedUsers} from "../users.ts";
 import {TestCase} from "../../types/TestCase.ts";
@@ -17,7 +17,7 @@ export class FakeSnippetOperations implements SnippetOperations {
     autoBind(this)
   }
 
-  createSnippet(createSnippet: CreateSnippet): Promise<Snippet> {
+  createSnippet(createSnippet: CreateSnippet): Promise<SnippetWithErr> {
     return new Promise(resolve => {
       setTimeout(() => resolve(this.fakeStore.createSnippet(createSnippet)), DELAY)
     })
@@ -42,7 +42,7 @@ export class FakeSnippetOperations implements SnippetOperations {
     })
   }
 
-  updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<Snippet> {
+  updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<SnippetWithErr> {
     return new Promise(resolve => {
       setTimeout(() => resolve(this.fakeStore.updateSnippet(id, updateSnippet)), DELAY)
     })
@@ -125,5 +125,9 @@ export class FakeSnippetOperations implements SnippetOperations {
     return new Promise(resolve => {
       setTimeout(() => resolve(this.fakeStore.modifyLintingRule(newRules)), DELAY)
     })
+  }
+
+  runAllTests(id: string): Promise<{ passed: number; failed: number }> {
+    throw new Error("Method not implemented for id: " + id)
   }
 }

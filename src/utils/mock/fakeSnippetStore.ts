@@ -1,4 +1,4 @@
-import {ComplianceEnum, CreateSnippet, Snippet, UpdateSnippet} from '../snippet'
+import {ComplianceEnum, CreateSnippet, Snippet, SnippetWithErr, UpdateSnippet} from '../snippet'
 import {v4 as uuid} from 'uuid'
 import {PaginatedUsers} from "../users.ts";
 import {TestCase} from "../../types/TestCase.ts";
@@ -186,13 +186,14 @@ export class FakeSnippetStore {
     return Array.from(this.snippetMap, ([, value]) => value)
   }
 
-  createSnippet(createSnippet: CreateSnippet): Snippet {
+  createSnippet(createSnippet: CreateSnippet): SnippetWithErr {
     const id = uuid();
     const newSnippet = {
       id,
       status: 'compliant' as ComplianceEnum,
       author: 'yo',
       owner: 'yo',
+      errors: [],
       ...createSnippet
     }
     this.snippetMap.set(id, newSnippet)
@@ -204,7 +205,7 @@ export class FakeSnippetStore {
     return this.snippetMap.get(id)
   }
 
-  updateSnippet(id: string, updateSnippet: UpdateSnippet): Snippet {
+  updateSnippet(id: string, updateSnippet: UpdateSnippet): SnippetWithErr {
     const existingSnippet = this.snippetMap.get(id)
 
     if (existingSnippet === undefined)
@@ -212,7 +213,8 @@ export class FakeSnippetStore {
 
     const newSnippet = {
       ...existingSnippet,
-      ...updateSnippet
+      ...updateSnippet,
+      errors: []
     }
     this.snippetMap.set(id, newSnippet)
 

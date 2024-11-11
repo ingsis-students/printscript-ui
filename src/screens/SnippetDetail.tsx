@@ -59,7 +59,6 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
     const {mutateAsync: updateSnippet, isLoading: isUpdateSnippetLoading} = useUpdateSnippetById({
         onSuccess: () => {
             queryClient.invalidateQueries(['snippet', id]).then();
-            handleRunAllTests().then(); // Ejecuta todos los tests después de guardar
         }
     });
 
@@ -102,6 +101,7 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
                 setErrors(response.errors);
             } else {
                 handleCloseModal();
+                handleRunAllTests().then();
             }
         } catch (err) {
             console.error("An error occurred while updating the snippet:", err);

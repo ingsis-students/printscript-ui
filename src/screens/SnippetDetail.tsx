@@ -6,9 +6,11 @@ import "prismjs/components/prism-javascript";
 import "prismjs/themes/prism-okaidia.css";
 import {Alert, Box, CircularProgress, IconButton, Tooltip, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import {toast} from "react-toastify"; // Importa react-toastify
 import {
     useCheckIfOwner,
-    useUpdateSnippetById
+    useUpdateSnippetById,
+    useRunAllTests // Importa useRunAllTests
 } from "../utils/queries.tsx";
 import {useFormatSnippet, useGetSnippetById, useShareSnippet} from "../utils/queries.tsx";
 import {Bòx} from "../components/snippet-table/SnippetBox.tsx";
@@ -51,11 +53,9 @@ const DownloadButton = ({snippet}: { snippet?: Snippet }) => {
 
 export const SnippetDetail = (props: SnippetDetailProps) => {
     const {id, handleCloseModal} = props;
-    const [code, setCode] = useState(
-        ""
-    );
-    const [shareModalOppened, setShareModalOppened] = useState(false)
-    const [deleteConfirmationModalOpen, setDeleteConfirmationModalOpen] = useState(false)
+    const [code, setCode] = useState("");
+    const [shareModalOppened, setShareModalOppened] = useState(false);
+    const [deleteConfirmationModalOpen, setDeleteConfirmationModalOpen] = useState(false);
     const [testModalOpened, setTestModalOpened] = useState(false);
     const {data: snippet, isLoading} = useGetSnippetById(id);
     const {mutate: shareSnippet, isLoading: loadingShare} = useShareSnippet()
@@ -63,8 +63,15 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
     const {
         mutate: updateSnippet,
         isLoading: isUpdateSnippetLoading
-    } = useUpdateSnippetById({onSuccess: () => queryClient.invalidateQueries(['snippet', id])})
-    const isOwner = useCheckIfOwner(snippet?.owner)
+    } = useUpdateSnippetById({
+        onSuccess: () => {
+            queryClient.invalidateQueries(['snippet', id]);
+            handleRunAllTests(); // Ejecuta todos los tests después de guardar
+        }
+    });
+
+    const {mutateAsync: runAllTests} = useRunAllTests(id); // Hook para ejecutar todos los tests
+    const isOwner = useCheckIfOwner(snippet?.owner);
 
     useEffect(() => {
         if (snippet) {
@@ -76,8 +83,16 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
         if (formatSnippetData) {
             setCode(formatSnippetData)
         }
-    }, [formatSnippetData])
+    }, [formatSnippetData]);
 
+    const handleRunAllTests = async () => {
+        const { passed, failed } = await runAllTests();
+        if (failed > 0) {
+            toast.error(`${passed} tests passed, ${failed} tests failed 😢`);
+        } else {
+            toast.success("All tests passed 🎉");
+        }
+    };
 
     async function handleShareSnippet(userId: string) {
         shareSnippet({snippetId: id, userId})
@@ -108,12 +123,6 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
                                 </IconButton>
                             </Tooltip>
                             <DownloadButton snippet={snippet}/>
-                            {/*<Tooltip title={runSnippet ? "Stop run" : "Run"}>*/}
-                            {/*  <IconButton onClick={() => setRunSnippet(!runSnippet)}>*/}
-                            {/*    {runSnippet ? <StopRounded/> : <PlayArrow/>}*/}
-                            {/*  </IconButton>*/}
-                            {/*</Tooltip>*/}
-                            {/* TODO: we can implement a live mode*/}
                             <Tooltip title={"Format"}>
                                 <IconButton onClick={() => formatSnippet(code)} disabled={isFormatLoading}>
                                     <ReadMoreIcon/>
@@ -177,6 +186,4 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
                                      id={snippet?.id ?? ""} setCloseDetails={handleCloseModal}/>
         </Box>
     )
-        ;
-}
-
+};

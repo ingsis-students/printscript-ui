@@ -26,7 +26,7 @@ export const TabPanel = ({ value, index, test: initialTest, setTestCase, removeT
         if (result === "success") {
             toast.success("Test passed 🎉");
         } else {
-            toast.error("Test failed ❌");
+            toast.error("Test failed 😢");
         }
     };
 

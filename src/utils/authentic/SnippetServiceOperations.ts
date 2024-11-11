@@ -56,7 +56,7 @@ export class SnippetServiceOperations implements SnippetOperations {
         return await fetchSnippetById(id);
     }
 
-    async updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<Snippet> {
+    async updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<SnippetWithErr> {
         return await fetchUpdateSnippet(id, updateSnippet.content);
     }
 

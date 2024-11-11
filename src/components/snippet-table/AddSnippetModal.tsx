@@ -77,10 +77,11 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
 
     return (
         <ModalWrapper open={open} onClose={handleClose}>
+            <Box sx={{ maxHeight: '100vh', p: 2 }}>
             {
                 <Box sx={{display: 'flex', flexDirection: "row", justifyContent: "space-between"}}>
                     <Typography id="modal-modal-title" variant="h5" component="h2"
-                                sx={{display: 'flex', alignItems: 'center'}}>
+                                sx={{display: 'flex', alignItems: 'center', pb: '16px'}}>
                         Add Snippet
                     </Typography>
                     <Button disabled={!snippetName || !code || !language || loadingSnippet} variant="contained"
@@ -96,7 +97,7 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '16px'
+                pb: '16px'
             }}>
                 <InputLabel htmlFor="name">Name</InputLabel>
                 <Input onChange={e => setSnippetName(e.target.value)} value={snippetName} id="name"
@@ -105,7 +106,7 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '16px'
+                pb: '16px'
             }}>
                 <InputLabel htmlFor="name">Language</InputLabel>
                 <Select
@@ -157,6 +158,7 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
                     ))}
                 </Box>
             )}
+            </Box>
         </ModalWrapper>
     )
 }

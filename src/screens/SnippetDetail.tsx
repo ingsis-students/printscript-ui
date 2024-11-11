@@ -6,12 +6,8 @@ import "prismjs/components/prism-javascript";
 import "prismjs/themes/prism-okaidia.css";
 import {Alert, Box, CircularProgress, IconButton, Tooltip, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import {toast} from "react-toastify"; // Importa react-toastify
-import {
-    useCheckIfOwner,
-    useUpdateSnippetById,
-    useRunAllTests // Importa useRunAllTests
-} from "../utils/queries.tsx";
+import {toast} from "react-toastify";
+import {useCheckIfOwner, useUpdateSnippetById, useRunAllTests} from "../utils/queries.tsx";
 import {useFormatSnippet, useGetSnippetById, useShareSnippet} from "../utils/queries.tsx";
 import {Bòx} from "../components/snippet-table/SnippetBox.tsx";
 import {BugReport, Delete, Download, Save, Share} from "@mui/icons-material";
@@ -60,18 +56,16 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
     const {data: snippet, isLoading} = useGetSnippetById(id);
     const {mutate: shareSnippet, isLoading: loadingShare} = useShareSnippet()
     const {mutate: formatSnippet, isLoading: isFormatLoading, data: formatSnippetData} = useFormatSnippet()
-    const {
-        mutate: updateSnippet,
-        isLoading: isUpdateSnippetLoading
-    } = useUpdateSnippetById({
+    const {mutateAsync: updateSnippet, isLoading: isUpdateSnippetLoading} = useUpdateSnippetById({
         onSuccess: () => {
-            queryClient.invalidateQueries(['snippet', id]);
-            handleRunAllTests(); // Ejecuta todos los tests después de guardar
+            queryClient.invalidateQueries(['snippet', id]).then();
+            handleRunAllTests().then(); // Ejecuta todos los tests después de guardar
         }
     });
 
     const {mutateAsync: runAllTests} = useRunAllTests(id); // Hook para ejecutar todos los tests
     const isOwner = useCheckIfOwner(snippet?.owner);
+    const [errors, setErrors] = useState<string[]>([]);
 
     useEffect(() => {
         if (snippet) {
@@ -86,7 +80,7 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
     }, [formatSnippetData]);
 
     const handleRunAllTests = async () => {
-        const { passed, failed } = await runAllTests();
+        const {passed, failed} = await runAllTests();
         if (failed > 0) {
             toast.error(`${passed} tests passed, ${failed} tests failed 😢`);
         } else {
@@ -99,10 +93,31 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
         setShareModalOppened(false)
     }
 
+    const handleUpdateSnippet = async () => {
+        setErrors([]);
+        try {
+            const response = await updateSnippet({id: id, updateSnippet: {content: code}})
+
+            if (response.errors && response.errors.length > 0) {
+                setErrors(response.errors);
+            } else {
+                handleCloseModal();
+            }
+        } catch (err) {
+            console.error("An error occurred while updating the snippet:", err);
+        }
+
+    }
+
+    const handleClose = () => {
+        setErrors([]);
+        handleCloseModal();
+    }
+
     return (
-        <Box p={4} minWidth={'60vw'}>
+        <Box p={4} width={'60vw'}>
             <Box width={'100%'} p={2} display={'flex'} justifyContent={'flex-end'}>
-                <CloseIcon style={{cursor: "pointer"}} onClick={handleCloseModal}/>
+                <CloseIcon style={{cursor: "pointer"}} onClick={handleClose}/>
             </Box>
             {
                 isLoading ? (<>
@@ -126,16 +141,17 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
                             <Tooltip title={"Format"}>
                                 <IconButton onClick={() => {
                                     if (snippet?.id) {
-                                    formatSnippet({ id: snippet.id, content: code });
+                                        formatSnippet({id: snippet.id, content: code});
                                     } else {
                                         console.error("Snippet ID is undefined");
-                                }}} disabled={isFormatLoading}>
+                                    }
+                                }} disabled={isFormatLoading}>
                                     <ReadMoreIcon/>
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title={"Save changes"}>
                                 <IconButton color={"primary"}
-                                            onClick={() => updateSnippet({id: id, updateSnippet: {content: code}})}
+                                            onClick={() => handleUpdateSnippet()}
                                             disabled={isUpdateSnippetLoading || snippet?.content === code}>
                                     <Save/>
                                 </IconButton>
@@ -177,7 +193,7 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
                     {isOwner &&
                         <Box pt={1} flex={1} marginTop={2}>
                             <Alert severity="info">Output</Alert>
-                            <SnippetExecution/>
+                            <SnippetExecution errors={errors}/>
                         </Box>
                     }
                 </>

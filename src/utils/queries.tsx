@@ -34,21 +34,18 @@ export const useGetSnippetById = (id: string) => {
     });
 };
 
-export const useCreateSnippet = ({onSuccess}: {
-    onSuccess: () => void
-}): UseMutationResult<SnippetWithErr, Error, CreateSnippet> => {
+export const useCreateSnippet = ({onSuccess}: { onSuccess: () => void }):
+    UseMutationResult<SnippetWithErr, Error, CreateSnippet> => {
     const snippetOperations = useSnippetsOperations()
 
     return useMutation<SnippetWithErr, Error, CreateSnippet>(createSnippet => snippetOperations.createSnippet(createSnippet), {onSuccess});
 };
 
-export const useUpdateSnippetById = ({onSuccess}: { onSuccess: () => void }): UseMutationResult<Snippet, Error, {
-    id: string;
-    updateSnippet: UpdateSnippet
-}> => {
+export const useUpdateSnippetById = ({onSuccess}: { onSuccess: () => void }):
+    UseMutationResult<SnippetWithErr, Error, { id: string; updateSnippet: UpdateSnippet }> => {
     const snippetOperations = useSnippetsOperations()
 
-    return useMutation<Snippet, Error, { id: string; updateSnippet: UpdateSnippet }>(
+    return useMutation<SnippetWithErr, Error, { id: string; updateSnippet: UpdateSnippet }>(
         ({id, updateSnippet}) => snippetOperations.updateSnippetById(id, updateSnippet), {
             onSuccess,
         }
@@ -150,7 +147,7 @@ export const useModifyLintingRules = ({onSuccess}: { onSuccess: () => void }) =>
 export const useFormatSnippet = () => {
     const snippetOperations = useSnippetsOperations()
 
-    return useMutation<string, Error, {id: string, content: string}>(
+    return useMutation<string, Error, { id: string, content: string }>(
         ({id, content}) => snippetOperations.formatSnippet(id, content)
     );
 }

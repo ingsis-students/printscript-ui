@@ -28,7 +28,7 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
     onClose: () => void,
     defaultSnippet?: CreateSnippetWithLang
 }) => {
-    const [language, setLanguage] = useState(defaultSnippet?.language ?? "printscript");
+    const [languageId, setLanguageId] = useState(defaultSnippet?.language ?? "1");
     const [code, setCode] = useState(defaultSnippet?.content ?? "");
     const [snippetName, setSnippetName] = useState(defaultSnippet?.name ?? "")
     const [errors, setErrors] = useState<string[]>([]);
@@ -40,13 +40,14 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
     const handleCreateSnippet = async () => {
         setErrors([]);
 
-        const selectedFileType = fileTypes?.find((f) => f.language === language);
+        const selectedFileType = fileTypes?.find((f) => f.id === languageId);
 
         const newSnippet: CreateSnippet = {
             name: snippetName,
             content: code,
-            language: selectedFileType?.id ?? "1",
-            extension: selectedFileType?.extension ?? "ps"
+            language: selectedFileType?.id ?? "1", //TODO RARI ESTA VARIABLE
+            extension: selectedFileType?.extension ?? "ps",
+            version: selectedFileType?.version ?? "1.1"
         };
 
         try {
@@ -70,7 +71,7 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
     useEffect(() => {
         if (defaultSnippet) {
             setCode(defaultSnippet?.content)
-            setLanguage(defaultSnippet?.language)
+            setLanguageId(defaultSnippet?.language);
             setSnippetName(defaultSnippet?.name)
         }
     }, [defaultSnippet]);
@@ -84,7 +85,7 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
                                 sx={{display: 'flex', alignItems: 'center', pb: '16px'}}>
                         Add Snippet
                     </Typography>
-                    <Button disabled={!snippetName || !code || !language || loadingSnippet} variant="contained"
+                    <Button disabled={!snippetName || !code || !languageId || loadingSnippet} variant="contained"
                             disableRipple
                             sx={{boxShadow: 0}} onClick={handleCreateSnippet}>
                         <Box pr={1} display={"flex"} alignItems={"center"} justifyContent={"center"}>
@@ -112,16 +113,16 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
                 <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={language}
+                    value={languageId}
                     label="Age"
-                    onChange={(e: SelectChangeEvent<string>) => setLanguage(e.target.value)}
+                    onChange={(e: SelectChangeEvent<string>) => setLanguageId(e.target.value)}
                     sx={{width: '50%'}}
                 >
                     {(Array.isArray(fileTypes) && fileTypes.length > 0) ? (
                         fileTypes.map((x) => (
                             x && x.language ? (
-                                <MenuItem data-testid={`menu-option-${x.language}`} key={x.language} value={x.language}>
-                                    {capitalize(x.language)}
+                                <MenuItem data-testid={`menu-option-${x.language}`} key={x.id} value={x.id}>
+                                    {capitalize(x.language)} {x.version}
                                 </MenuItem>
                             ) : null
                         ))

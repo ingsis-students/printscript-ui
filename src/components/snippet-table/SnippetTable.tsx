@@ -27,10 +27,12 @@ type SnippetTableProps = {
   snippets?: Snippet[];
   loading: boolean;
   handleSearchSnippet: (snippetName: string) => void;
+  handleRoleFilter: (role: string) => void;
+  handleLanguageFilter: (languageId: number) => void;
 }
 
 export const SnippetTable = (props: SnippetTableProps) => {
-  const {snippets, handleClickSnippet, loading,handleSearchSnippet} = props;
+  const {snippets, handleClickSnippet, loading, handleSearchSnippet, handleRoleFilter, handleLanguageFilter} = props;
   const [addModalOpened, setAddModalOpened] = useState(false);
   const [popoverMenuOpened, setPopoverMenuOpened] = useState(false)
   const [snippet, setSnippet] = useState<CreateSnippetWithLang | undefined>()
@@ -59,7 +61,8 @@ export const SnippetTable = (props: SnippetTableProps) => {
         name: splitName[0],
         content: text,
         language: fileType.language,
-        extension: fileType.extension
+        extension: fileType.extension,
+        version: fileType.version
       })
     }).catch(e => {
       console.error(e)
@@ -87,6 +90,7 @@ export const SnippetTable = (props: SnippetTableProps) => {
               <Search/>
             </IconButton>
           </Box>
+
           <Button ref={popoverRef} variant="contained" disableRipple sx={{boxShadow: 0}}
                   onClick={() => setPopoverMenuOpened(true)}>
             <Add/>

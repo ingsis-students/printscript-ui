@@ -15,8 +15,7 @@ const INITIAL_SNIPPETS: Snippet[] = [
     author: 'John Doe',
     owner: 'John Doe',
     language: 'printscript',
-    extension: 'prs',
-    version: '1.1'
+    extension: 'prs'
   },
   {
     id: 'c48cf644-fbc1-4649-a8f4-9dd7110640d9',
@@ -26,8 +25,7 @@ const INITIAL_SNIPPETS: Snippet[] = [
     author: 'John Doe',
     owner: 'John Doe',
     language: 'printscript',
-    extension: 'prs',
-    version: '1.1'
+    extension: 'prs'
   },
   {
     id: '34bf4b7a-d4a1-48be-bb26-7d9a3be46227',
@@ -37,8 +35,7 @@ const INITIAL_SNIPPETS: Snippet[] = [
     author: 'John Doe',
     owner: 'John Doe',
     language: 'printscript',
-    extension: 'prs',
-    version: '1.1'
+    extension: 'prs'
   }
 ]
 
@@ -148,26 +145,22 @@ const fileTypes: FileType[] = [
   {
     language: "printscript",
     extension: "prs",
-    id: "1",
-    version: "1.1"
+    id: "1"
   },
   {
     language: "python",
     extension: "py",
-    id: "2",
-    version: "3.9"
+    id: "2"
   },
   {
     language: "java",
     extension: "java",
-    id: "3",
-    version: "11"
+    id: "3"
   },
   {
     language: 'golang',
     extension: 'go',
-    id: '4',
-    version: '1.17'
+    id: '4'
   }
 ]
 

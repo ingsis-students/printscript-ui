@@ -157,6 +157,14 @@ export class SnippetServiceOperations implements SnippetOperations {
         return response.data as TestCaseResult;
     }
 
+    async runAllTests(snippetId: string): Promise<{ passed: number; failed: number }> {
+        const response = await axiosInstance.post(`/tests/${snippetId}/run-all`);
+        if (response.status !== 200) {
+            throw new Error("Failed to run all tests");
+        }
+        return response.data;
+    }
+
     async getFileTypes(): Promise<FileType[]> {
         return fetchFileTypes();
     }

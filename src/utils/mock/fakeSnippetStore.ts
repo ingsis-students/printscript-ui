@@ -1,4 +1,4 @@
-import {ComplianceEnum, CreateSnippet, Snippet, UpdateSnippet} from '../snippet'
+import {ComplianceEnum, CreateSnippet, Snippet, SnippetWithErr, UpdateSnippet} from '../snippet'
 import {v4 as uuid} from 'uuid'
 import {PaginatedUsers} from "../users.ts";
 import {TestCase} from "../../types/TestCase.ts";
@@ -11,7 +11,7 @@ const INITIAL_SNIPPETS: Snippet[] = [
     id: '9af91631-cdfc-4341-9b8e-3694e5cb3672',
     name: 'Super Snippet',
     content: 'let a : number = 5;\nlet b : number = 5;\n\nprintln(a + b);',
-    compliance: 'pending',
+    status: 'pending',
     author: 'John Doe',
     owner: 'John Doe',
     language: 'printscript',
@@ -21,7 +21,7 @@ const INITIAL_SNIPPETS: Snippet[] = [
     id: 'c48cf644-fbc1-4649-a8f4-9dd7110640d9',
     name: 'Extra cool Snippet',
     content: 'let a : number = 5;\nlet b : number = 5;\n\nprintln(a + b);',
-    compliance: 'not-compliant',
+    status: 'not-compliant',
     author: 'John Doe',
     owner: 'John Doe',
     language: 'printscript',
@@ -31,7 +31,7 @@ const INITIAL_SNIPPETS: Snippet[] = [
     id: '34bf4b7a-d4a1-48be-bb26-7d9a3be46227',
     name: 'Boaring Snippet',
     content: 'let a : number = 5;\nlet b : number = 5;\n\nprintln(a + b);',
-    compliance: 'compliant',
+    status: 'compliant',
     author: 'John Doe',
     owner: 'John Doe',
     language: 'printscript',
@@ -186,13 +186,14 @@ export class FakeSnippetStore {
     return Array.from(this.snippetMap, ([, value]) => value)
   }
 
-  createSnippet(createSnippet: CreateSnippet): Snippet {
+  createSnippet(createSnippet: CreateSnippet): SnippetWithErr {
     const id = uuid();
     const newSnippet = {
       id,
-      compliance: 'compliant' as ComplianceEnum,
+      status: 'compliant' as ComplianceEnum,
       author: 'yo',
       owner: 'yo',
+      errors: [],
       ...createSnippet
     }
     this.snippetMap.set(id, newSnippet)

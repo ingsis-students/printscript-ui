@@ -1,4 +1,4 @@
-import {CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from './snippet'
+import {CreateSnippet, PaginatedSnippets, Snippet, SnippetWithErr, UpdateSnippet} from './snippet'
 import {PaginatedUsers} from "./users.ts";
 import {TestCase} from "../types/TestCase.ts";
 import {TestCaseResult} from "./queries.tsx";
@@ -8,7 +8,7 @@ import {Rule} from "../types/Rule.ts";
 export interface SnippetOperations {
   listSnippetDescriptors(page: number,pageSize: number,snippetName?: string): Promise<PaginatedSnippets>
 
-  createSnippet(createSnippet: CreateSnippet): Promise<Snippet>
+  createSnippet(createSnippet: CreateSnippet): Promise<SnippetWithErr>
 
   getSnippetById(id: string): Promise<Snippet | undefined>
 
@@ -24,7 +24,7 @@ export interface SnippetOperations {
 
   getTestCases(snippetId: string): Promise<TestCase[]>
 
-  formatSnippet(snippet: string): Promise<string>
+  formatSnippet(id: string, content: string): Promise<string>
 
   postTestCase(testCase: Partial<TestCase>, snippetId: string): Promise<TestCase>
 

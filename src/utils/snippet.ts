@@ -25,8 +25,12 @@ export type Snippet = CreateSnippet & {
   id: string
 } & SnippetStatus
 
+export type SnippetWithErr = Snippet & {
+    errors: string[]
+}
+
 type SnippetStatus = {
-  compliance: ComplianceEnum;
+  status: ComplianceEnum;
   author: string;
   owner: string;
 }

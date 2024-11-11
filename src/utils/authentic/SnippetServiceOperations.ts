@@ -2,7 +2,7 @@ import {FileType} from "../../types/FileType.ts";
 import {Rule} from "../../types/Rule.ts";
 import {TestCase} from "../../types/TestCase.ts";
 import {TestCaseResult} from "../queries.tsx";
-import {ComplianceEnum, CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "../snippet.ts";
+import {ComplianceEnum, CreateSnippet, PaginatedSnippets, Snippet, SnippetWithErr, UpdateSnippet} from "../snippet.ts";
 import {SnippetOperations} from "../snippetOperations.ts";
 import {PaginatedUsers} from "../users.ts";
 import {useCreateSnippet} from "../../hooks/useCreateSnippet.ts";
@@ -46,7 +46,7 @@ export class SnippetServiceOperations implements SnippetOperations {
         } as PaginatedSnippets;
     }
 
-    createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
+    createSnippet = async (createSnippet: CreateSnippet): Promise<SnippetWithErr> => {
         const {name, content, language} = createSnippet;
         const owner = this.user?.email
         return await useCreateSnippet(name, content, language, owner);
@@ -106,8 +106,8 @@ export class SnippetServiceOperations implements SnippetOperations {
         }
     }
 
-    async formatSnippet(snippet: string): Promise<string> {
-        return await fetchFormatSnippet(snippet);
+    async formatSnippet(id: string, content: string): Promise<string> {
+        return await fetchFormatSnippet(id, content);
     }
 
     async getTestCases(snippetId: string): Promise<TestCase[]> {
@@ -202,7 +202,7 @@ const mapToSnippet = (snippet: SnippetResponse): Snippet => ({
     content: snippet.content,
     language: snippet.language,
     extension: snippet.extension,
-    compliance: (snippet.compilance as ComplianceEnum) || 'pending',
+    status: (snippet.status as ComplianceEnum) || 'pending',
     author: snippet.owner,
     owner: snippet.owner
 });
@@ -213,6 +213,6 @@ type SnippetResponse = {
     content: string;
     language: string;
     extension: string;
-    compilance?: string;
+    status?: string;
     owner: string;
 }

@@ -41,7 +41,7 @@ describe('Home', () => {
     const snippetData = {
       name: "Test name",
       content: "print(1)",
-      languageId: "4",
+      languageId: "1",
       owner: "nachochevamusica@gmail.com"
     }
 
@@ -58,7 +58,7 @@ describe('Home', () => {
       url: BACKEND_URL + '/snippets/', // Adjust if you have a different base URL configured in Cypress
       body: snippetData,
       headers: {
-        Authorization: `Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkVyTjdBZndSS0JqZ0sxdWw1ci0xXyJ9.eyJpc3MiOiJodHRwczovL3N0dWRlbnRzLWluZ3Npcy51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDAyMzE3Mjc1NzczMzU1NzQ4NzQiLCJhdWQiOlsiaHR0cHM6Ly9zdHVkZW50cy5pbmdzaXMuY29tL2FwaSIsImh0dHBzOi8vc3R1ZGVudHMtaW5nc2lzLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE3MzExODc3MDksImV4cCI6MTczMTI3NDEwOSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImF6cCI6IkgzSTg2S3RpSFdPN1U4bmc5SmlmZHNrRkZSQ08wVVdJIiwicGVybWlzc2lvbnMiOltdfQ.buDHV21DSbuOKsE9Bdf6Ht6yZ4g0jkv71DiLauCx760HpIrL1A2H0SXZG5oPuJRNqtaZb25rJiNpW6oMXG-HfAEtB5EaKPsfF-x6m61J60lBZyfqBOACnJcL-TI31-2esI3aFGwMzG4Fmekr27V-GTLdQ46JM1i8jx4zVf2sObI2UxgO_-hThJQdVoaynxna3IUwKEiNhjrGfAI4Gasz_PW7jwCWXyfXakB35Ih-7_gJB3yi0brxDUToYc_UIDyiowWUdbZ4w_zCbEThRnxOfm0BwHOSdNaB47aHl-hovtnA5tYLafwfHZFqCvwsUem9lOQ96g1AZAETiEY7X_4xfw`
+        Authorization: `Bearer ${localStorage.getItem('authAccessToken')}`
       },
       failOnStatusCode: false // Optional: set to true if you want the test to fail on non-2xx status codes
     }).then((response) => {

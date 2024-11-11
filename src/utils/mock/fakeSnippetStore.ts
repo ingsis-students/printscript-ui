@@ -205,7 +205,7 @@ export class FakeSnippetStore {
     return this.snippetMap.get(id)
   }
 
-  updateSnippet(id: string, updateSnippet: UpdateSnippet): Snippet {
+  updateSnippet(id: string, updateSnippet: UpdateSnippet): SnippetWithErr {
     const existingSnippet = this.snippetMap.get(id)
 
     if (existingSnippet === undefined)
@@ -213,7 +213,8 @@ export class FakeSnippetStore {
 
     const newSnippet = {
       ...existingSnippet,
-      ...updateSnippet
+      ...updateSnippet,
+      errors: []
     }
     this.snippetMap.set(id, newSnippet)
 

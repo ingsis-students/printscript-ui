@@ -42,7 +42,7 @@ export class FakeSnippetOperations implements SnippetOperations {
     })
   }
 
-  updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<Snippet> {
+  updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<SnippetWithErr> {
     return new Promise(resolve => {
       setTimeout(() => resolve(this.fakeStore.updateSnippet(id, updateSnippet)), DELAY)
     })

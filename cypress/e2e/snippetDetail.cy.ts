@@ -22,6 +22,16 @@ describe('Add snippet tests', () => {
       },
     }).as("getSnippets");
 
+    cy.intercept('GET', BACKEND_URL + "/user/", {
+        statusCode: 200,
+        body: {
+            page: 1,
+            page_size: 1,
+            count: 1,
+            users: [ { id: "1", email: "nachochevallier@gmail.com" } ]
+        },
+    })
+
     cy.visit("/")
     cy.wait(5000)
 
@@ -31,14 +41,14 @@ describe('Add snippet tests', () => {
 
   it('Can share a snippet ', () => {
     cy.get('[aria-label="Share"]').click();
-    cy.get('#\\:rl\\:').click();
-    cy.get('#\\:rl\\:-option-0').click();
+    cy.get('button[aria-label="Open"]').click();
+    cy.get('[role="listbox"] li:nth-child(1)').click();
     cy.get('.css-1yuhvjn > .MuiBox-root > .MuiButton-contained').click();
     cy.wait(2000)
   })
 
   it('Can run snippets', function() {
-    cy.get('[data-testid="PlayArrowIcon"]').click();
+    cy.get('button[aria-label="Test"]').click();
     cy.get('.css-1hpabnv > .MuiBox-root > div > .npm__react-simple-code-editor__textarea').should("have.length.greaterThan",0);
   });
 

@@ -1,10 +1,10 @@
 import {axiosInstance} from "./axios.config.ts";
 
 
-const fetchFormatSnippet = async (code: string): Promise<string> => {
+const fetchFormatSnippet = async (id: string, content: string): Promise<string> => {
     try {
-        const response = await axiosInstance.post("/printscript/format", {
-            code,
+        const response = await axiosInstance.post(`/snippets/format/${id}`, {
+            content,
         });
         return response.data;
     } catch (error) {

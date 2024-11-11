@@ -2,7 +2,7 @@ import {FileType} from "../../types/FileType.ts";
 import {Rule} from "../../types/Rule.ts";
 import {TestCase} from "../../types/TestCase.ts";
 import {TestCaseResult} from "../queries.tsx";
-import {ComplianceEnum, CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "../snippet.ts";
+import {ComplianceEnum, CreateSnippet, PaginatedSnippets, Snippet, SnippetWithErr, UpdateSnippet} from "../snippet.ts";
 import {SnippetOperations} from "../snippetOperations.ts";
 import {PaginatedUsers} from "../users.ts";
 import {useCreateSnippet} from "../../hooks/useCreateSnippet.ts";
@@ -46,7 +46,7 @@ export class SnippetServiceOperations implements SnippetOperations {
         } as PaginatedSnippets;
     }
 
-    createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
+    createSnippet = async (createSnippet: CreateSnippet): Promise<SnippetWithErr> => {
         const {name, content, language} = createSnippet;
         const owner = this.user?.email
         return await useCreateSnippet(name, content, language, owner);

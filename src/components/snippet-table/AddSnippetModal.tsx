@@ -31,23 +31,41 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
     const [language, setLanguage] = useState(defaultSnippet?.language ?? "printscript");
     const [code, setCode] = useState(defaultSnippet?.content ?? "");
     const [snippetName, setSnippetName] = useState(defaultSnippet?.name ?? "")
+    const [errors, setErrors] = useState<string[]>([]);
     const {mutateAsync: createSnippet, isLoading: loadingSnippet} = useCreateSnippet({
         onSuccess: () => queryClient.invalidateQueries('listSnippets')
     })
     const {data: fileTypes} = useGetFileTypes();
 
     const handleCreateSnippet = async () => {
-        const selectedFileType = fileTypes?.find((f) => f.language === language)
+        setErrors([]);
+
+        const selectedFileType = fileTypes?.find((f) => f.language === language);
 
         const newSnippet: CreateSnippet = {
             name: snippetName,
             content: code,
             language: selectedFileType?.id ?? "1",
-            extension: selectedFileType?.extension ?? "prs"
+            extension: selectedFileType?.extension ?? "ps"
+        };
+
+        try {
+            const response = await createSnippet(newSnippet);
+
+            if (response.errors && response.errors.length > 0) {
+                setErrors(response.errors);
+            } else {
+                onClose();
+            }
+        } catch (err) {
+            setErrors(["An error occurred while creating the snippet."]);
         }
-        await createSnippet(newSnippet);
+    };
+
+    const handleClose = () => {
+        setErrors([]);
         onClose();
-    }
+    };
 
     useEffect(() => {
         if (defaultSnippet) {
@@ -58,7 +76,7 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
     }, [defaultSnippet]);
 
     return (
-        <ModalWrapper open={open} onClose={onClose}>
+        <ModalWrapper open={open} onClose={handleClose}>
             {
                 <Box sx={{display: 'flex', flexDirection: "row", justifyContent: "space-between"}}>
                     <Typography id="modal-modal-title" variant="h5" component="h2"
@@ -132,6 +150,13 @@ export const AddSnippetModal = ({open, onClose, defaultSnippet}: {
                     }}
                 />
             </Box>
+            {errors.length > 0 && (
+                <Box sx={{color: 'red', p: 1}}>
+                    {errors.map((error, idx) => (
+                        <Typography key={idx}>{error}</Typography>
+                    ))}
+                </Box>
+            )}
         </ModalWrapper>
     )
 }

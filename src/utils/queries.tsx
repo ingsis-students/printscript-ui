@@ -108,6 +108,15 @@ export const useTestSnippet = () => {
     )
 }
 
+export const useRunAllTests = (snippetId: string) => {
+    const snippetOperations = useSnippetsOperations();
+
+    return useMutation<{ passed: number; failed: number }, Error>(
+        () => snippetOperations.runAllTests(snippetId)
+    );
+};
+
+
 export const useGetFormatRules = () => {
     const snippetOperations = useSnippetsOperations()
 

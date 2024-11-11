@@ -126,4 +126,8 @@ export class FakeSnippetOperations implements SnippetOperations {
       setTimeout(() => resolve(this.fakeStore.modifyLintingRule(newRules)), DELAY)
     })
   }
+
+  runAllTests(id: string): Promise<{ passed: number; failed: number }> {
+    throw new Error("Method not implemented for id: " + id)
+  }
 }

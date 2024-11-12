@@ -1,4 +1,11 @@
-import {ComplianceEnum, CreateSnippet, Snippet, SnippetWithLintWarnings, UpdateSnippet} from '../snippet'
+import {
+    ComplianceEnum,
+    CreateSnippet,
+    Snippet,
+    SnippetWithErr,
+    SnippetWithLintWarnings,
+    UpdateSnippet
+} from '../snippet'
 import {v4 as uuid} from 'uuid'
 import {PaginatedUsers} from "../users.ts";
 import {TestCase} from "../../types/TestCase.ts";

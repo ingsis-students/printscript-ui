@@ -40,8 +40,8 @@ describe('Home', () => {
 
     const snippetData = {
       name: "Test name",
-      content: "print(1)",
-      languageId: "1",
+      content: "println(1);",
+      languageId: "4",
       owner: "nachochevamusica@gmail.com"
     }
 

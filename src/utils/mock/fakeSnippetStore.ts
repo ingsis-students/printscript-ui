@@ -15,7 +15,8 @@ const INITIAL_SNIPPETS: Snippet[] = [
     author: 'John Doe',
     owner: 'John Doe',
     language: 'printscript',
-    extension: 'prs'
+    extension: 'prs',
+    version: '1.1'
   },
   {
     id: 'c48cf644-fbc1-4649-a8f4-9dd7110640d9',
@@ -25,7 +26,8 @@ const INITIAL_SNIPPETS: Snippet[] = [
     author: 'John Doe',
     owner: 'John Doe',
     language: 'printscript',
-    extension: 'prs'
+    extension: 'prs',
+    version: '1.1'
   },
   {
     id: '34bf4b7a-d4a1-48be-bb26-7d9a3be46227',
@@ -35,7 +37,8 @@ const INITIAL_SNIPPETS: Snippet[] = [
     author: 'John Doe',
     owner: 'John Doe',
     language: 'printscript',
-    extension: 'prs'
+    extension: 'prs',
+    version: '1.1'
   }
 ]
 
@@ -145,22 +148,26 @@ const fileTypes: FileType[] = [
   {
     language: "printscript",
     extension: "prs",
-    id: "1"
+    id: "1",
+    version: "1.1"
   },
   {
     language: "python",
     extension: "py",
-    id: "2"
+    id: "2",
+    version: "3.9"
   },
   {
     language: "java",
     extension: "java",
-    id: "3"
+    id: "3",
+    version: "11"
   },
   {
     language: 'golang',
     extension: 'go',
-    id: '4'
+    id: '4',
+    version: '1.17'
   }
 ]
 
@@ -191,13 +198,14 @@ export class FakeSnippetStore {
     });
   }
 
-  createSnippet(createSnippet: CreateSnippet): Snippet {
+  createSnippet(createSnippet: CreateSnippet): SnippetWithErr {
     const id = uuid();
     const newSnippet = {
       id,
       status: 'compliant' as ComplianceEnum,
       author: 'yo',
       owner: 'yo',
+      errors: [],
       ...createSnippet
     }
     this.snippetMap.set(id, newSnippet)
@@ -209,7 +217,7 @@ export class FakeSnippetStore {
     return this.snippetMap.get(id)
   }
 
-  updateSnippet(id: string, updateSnippet: UpdateSnippet): Snippet {
+  updateSnippet(id: string, updateSnippet: UpdateSnippet): SnippetWithErr {
     const existingSnippet = this.snippetMap.get(id)
 
     if (existingSnippet === undefined)
@@ -217,7 +225,8 @@ export class FakeSnippetStore {
 
     const newSnippet = {
       ...existingSnippet,
-      ...updateSnippet
+      ...updateSnippet,
+      errors: []
     }
     this.snippetMap.set(id, newSnippet)
 

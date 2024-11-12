@@ -5,6 +5,7 @@ import {axiosInstance} from "./axios.config.ts";
 interface ApiResponseItem {
     name: string;
     extension: string;
+    version: string;
     id: string;
 }
 
@@ -19,6 +20,7 @@ export const fetchFileTypes = async (): Promise<FileType[]> => {
         return response.data.map((item: ApiResponseItem) => ({
             language: item.name,
             extension: item.extension,
+            version: item.version,
             id: item.id as string
         })) as FileType[];
 

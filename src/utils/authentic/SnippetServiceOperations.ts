@@ -2,14 +2,7 @@ import {FileType} from "../../types/FileType.ts";
 import {Rule} from "../../types/Rule.ts";
 import {TestCase} from "../../types/TestCase.ts";
 import {TestCaseResult} from "../queries.tsx";
-import {
-    ComplianceEnum,
-    CreateSnippet,
-    PaginatedSnippets,
-    Snippet,
-    SnippetWithLintWarnings,
-    UpdateSnippet
-} from "../snippet.ts";
+import {ComplianceEnum, CreateSnippet, PaginatedSnippets, Snippet, SnippetWithErr, UpdateSnippet, SnippetWithLintWarnings} from "../snippet.ts";
 import {SnippetOperations} from "../snippetOperations.ts";
 import {PaginatedUsers} from "../users.ts";
 import {useCreateSnippet} from "../../hooks/useCreateSnippet.ts";
@@ -53,7 +46,7 @@ export class SnippetServiceOperations implements SnippetOperations {
         } as PaginatedSnippets;
     }
 
-    createSnippet = async (createSnippet: CreateSnippet): Promise<Snippet> => {
+    createSnippet = async (createSnippet: CreateSnippet): Promise<SnippetWithErr> => {
         const {name, content, language} = createSnippet;
         const owner = this.user?.email
         return await useCreateSnippet(name, content, language, owner);
@@ -63,7 +56,7 @@ export class SnippetServiceOperations implements SnippetOperations {
         return await fetchSnippetById(id);
     }
 
-    async updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<Snippet> {
+    async updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<SnippetWithErr> {
         return await fetchUpdateSnippet(id, updateSnippet.content);
     }
 
@@ -164,6 +157,14 @@ export class SnippetServiceOperations implements SnippetOperations {
         return response.data as TestCaseResult;
     }
 
+    async runAllTests(snippetId: string): Promise<{ passed: number; failed: number }> {
+        const response = await axiosInstance.post(`/tests/${snippetId}/run-all`);
+        if (response.status !== 200) {
+            throw new Error("Failed to run all tests");
+        }
+        return response.data;
+    }
+
     async getFileTypes(): Promise<FileType[]> {
         return fetchFileTypes();
     }
@@ -204,6 +205,7 @@ const mapToSnippet = (snippet: SnippetResponse): SnippetWithLintWarnings => ({
     status: (snippet.status as ComplianceEnum) || 'pending',
     author: snippet.owner,
     owner: snippet.owner,
+    version: snippet.version,
     lintWarnings: snippet.lintWarnings || []
 });
 
@@ -213,6 +215,7 @@ type SnippetResponse = {
     content: string;
     language: string;
     extension: string;
+    version: string
     status?: string;
     owner: string;
     lintWarnings: string[];

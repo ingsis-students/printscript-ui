@@ -1,5 +1,5 @@
 import {useMutation, UseMutationResult, useQuery} from 'react-query';
-import {CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from './snippet.ts';
+import {CreateSnippet, PaginatedSnippets, Snippet, SnippetWithErr, UpdateSnippet} from './snippet.ts';
 import {SnippetOperations} from "./snippetOperations.ts";
 import {PaginatedUsers} from "./users.ts";
 import {TestCase} from "../types/TestCase.ts";
@@ -34,21 +34,18 @@ export const useGetSnippetById = (id: string) => {
     });
 };
 
-export const useCreateSnippet = ({onSuccess}: {
-    onSuccess: () => void
-}): UseMutationResult<Snippet, Error, CreateSnippet> => {
+export const useCreateSnippet = ({onSuccess}: { onSuccess: () => void }):
+    UseMutationResult<SnippetWithErr, Error, CreateSnippet> => {
     const snippetOperations = useSnippetsOperations()
 
-    return useMutation<Snippet, Error, CreateSnippet>(createSnippet => snippetOperations.createSnippet(createSnippet), {onSuccess});
+    return useMutation<SnippetWithErr, Error, CreateSnippet>(createSnippet => snippetOperations.createSnippet(createSnippet), {onSuccess});
 };
 
-export const useUpdateSnippetById = ({onSuccess}: { onSuccess: () => void }): UseMutationResult<Snippet, Error, {
-    id: string;
-    updateSnippet: UpdateSnippet
-}> => {
+export const useUpdateSnippetById = ({onSuccess}: { onSuccess: () => void }):
+    UseMutationResult<SnippetWithErr, Error, { id: string; updateSnippet: UpdateSnippet }> => {
     const snippetOperations = useSnippetsOperations()
 
-    return useMutation<Snippet, Error, { id: string; updateSnippet: UpdateSnippet }>(
+    return useMutation<SnippetWithErr, Error, { id: string; updateSnippet: UpdateSnippet }>(
         ({id, updateSnippet}) => snippetOperations.updateSnippetById(id, updateSnippet), {
             onSuccess,
         }
@@ -108,6 +105,15 @@ export const useTestSnippet = () => {
     )
 }
 
+export const useRunAllTests = (snippetId: string) => {
+    const snippetOperations = useSnippetsOperations();
+
+    return useMutation<{ passed: number; failed: number }, Error>(
+        () => snippetOperations.runAllTests(snippetId)
+    );
+};
+
+
 export const useGetFormatRules = () => {
     const snippetOperations = useSnippetsOperations()
 
@@ -141,7 +147,7 @@ export const useModifyLintingRules = ({onSuccess}: { onSuccess: () => void }) =>
 export const useFormatSnippet = () => {
     const snippetOperations = useSnippetsOperations()
 
-    return useMutation<string, Error, {id: string, content: string}>(
+    return useMutation<string, Error, { id: string, content: string }>(
         ({id, content}) => snippetOperations.formatSnippet(id, content)
     );
 }

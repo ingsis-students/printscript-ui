@@ -1,4 +1,4 @@
-import {ComplianceEnum, CreateSnippet, Snippet, UpdateSnippet} from '../snippet'
+import {ComplianceEnum, CreateSnippet, Snippet, SnippetWithLintWarnings, UpdateSnippet} from '../snippet'
 import {v4 as uuid} from 'uuid'
 import {PaginatedUsers} from "../users.ts";
 import {TestCase} from "../../types/TestCase.ts";
@@ -182,8 +182,13 @@ export class FakeSnippetStore {
     this.lintingRules = INITIAL_LINTING_RULES
   }
 
-  listSnippetDescriptors(): Snippet[] {
-    return Array.from(this.snippetMap, ([, value]) => value)
+  listSnippetDescriptors(): SnippetWithLintWarnings[] {
+    return Array.from(this.snippetMap, ([, value]) => {
+        return {
+            ...value,
+            lintWarnings: []
+        };
+    });
   }
 
   createSnippet(createSnippet: CreateSnippet): Snippet {

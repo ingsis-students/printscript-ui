@@ -2,7 +2,14 @@ import {FileType} from "../../types/FileType.ts";
 import {Rule} from "../../types/Rule.ts";
 import {TestCase} from "../../types/TestCase.ts";
 import {TestCaseResult} from "../queries.tsx";
-import {ComplianceEnum, CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "../snippet.ts";
+import {
+    ComplianceEnum,
+    CreateSnippet,
+    PaginatedSnippets,
+    Snippet,
+    SnippetWithLintWarnings,
+    UpdateSnippet
+} from "../snippet.ts";
 import {SnippetOperations} from "../snippetOperations.ts";
 import {PaginatedUsers} from "../users.ts";
 import {useCreateSnippet} from "../../hooks/useCreateSnippet.ts";
@@ -188,7 +195,7 @@ export class SnippetServiceOperations implements SnippetOperations {
     }
 }
 
-const mapToSnippet = (snippet: SnippetResponse): Snippet => ({
+const mapToSnippet = (snippet: SnippetResponse): SnippetWithLintWarnings => ({
     id: snippet.id,
     name: snippet.name,
     content: snippet.content,
@@ -196,7 +203,8 @@ const mapToSnippet = (snippet: SnippetResponse): Snippet => ({
     extension: snippet.extension,
     status: (snippet.status as ComplianceEnum) || 'pending',
     author: snippet.owner,
-    owner: snippet.owner
+    owner: snippet.owner,
+    lintWarnings: snippet.lintWarnings || []
 });
 
 type SnippetResponse = {
@@ -207,4 +215,5 @@ type SnippetResponse = {
     extension: string;
     status?: string;
     owner: string;
+    lintWarnings: string[];
 }

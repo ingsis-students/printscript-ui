@@ -22,7 +22,7 @@ export type UpdateSnippet = {
 }
 
 export type Snippet = CreateSnippet & {
-  id: string
+    id: string
 } & SnippetStatus
 
 type SnippetStatus = {
@@ -30,9 +30,13 @@ type SnippetStatus = {
   author: string;
   owner: string;
 }
-export type PaginatedSnippets = Pagination & {
-  snippets: Snippet[]
+export type SnippetWithLintWarnings = Snippet & {
+    lintWarnings: string[];
 }
+export type PaginatedSnippets = Pagination & {
+  snippets: SnippetWithLintWarnings[]
+}
+
 
 export const getFileLanguage = (fileTypes: FileType[], fileExt?: string) => {
 

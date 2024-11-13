@@ -78,12 +78,32 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
         }
     }, [formatSnippetData]);
 
-    const handleRunAllTests = async () => {
-        const {passed, failed} = await runAllTests();
-        if (failed > 0) {
-            toast.error(`${passed} tests passed, ${failed} tests failed 😢`);
-        } else {
-            toast.success("All tests passed 🎉");
+    const handleRunAllTestsToast = async () => {
+        try {
+            const results = await runAllTests();
+
+            const failedTests = Object.entries(results).filter(([, errors]) => errors.length > 0);
+            const passedCount = Object.entries(results).length - failedTests.length;
+
+            const summary = `${passedCount} tests passed, ${failedTests.length} tests failed`;
+
+            if (failedTests.length > 0) {
+                setErrors([]);
+                const errorMessages = failedTests
+                    .map(([testName, errors]) => `Failed test name: ${testName}\n\t${errors.join('\n\t')}`)
+                    .join('\n');
+
+                const finalLine = `----------------------------------------------------------------------------`;
+
+                setErrors([summary, ...errorMessages.split('\n'), finalLine]);
+
+                toast.error(`${passedCount} tests passed, ${failedTests.length} tests failed`);
+            } else {
+                toast.success("All tests passed 🎉");
+            }
+        } catch (error) {
+            toast.error("Failed to run all tests 😢");
+            console.error("Error running tests:", error);
         }
     };
 
@@ -100,8 +120,7 @@ export const SnippetDetail = (props: SnippetDetailProps) => {
             if (response.errors && response.errors.length > 0) {
                 setErrors(response.errors);
             } else {
-                handleCloseModal();
-                handleRunAllTests().then();
+                handleRunAllTestsToast().then();
             }
         } catch (err) {
             console.error("An error occurred while updating the snippet:", err);

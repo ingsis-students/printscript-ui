@@ -108,7 +108,7 @@ export const useTestSnippet = () => {
 export const useRunAllTests = (snippetId: string) => {
     const snippetOperations = useSnippetsOperations();
 
-    return useMutation<{ passed: number; failed: number }, Error>(
+    return useMutation<Map<string, string[]>, Error>(
         () => snippetOperations.runAllTests(snippetId)
     );
 };

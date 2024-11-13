@@ -127,7 +127,7 @@ export class FakeSnippetOperations implements SnippetOperations {
     })
   }
 
-  runAllTests(id: string): Promise<{ passed: number; failed: number }> {
-    throw new Error("Method not implemented for id: " + id)
+  runAllTests(snippetId: string): Promise<Map<string, string[]>> {
+    throw new Error('Method not implemented. Cant run all test for snippet' + snippetId)
   }
 }

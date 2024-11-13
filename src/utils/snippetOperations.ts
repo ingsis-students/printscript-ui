@@ -40,5 +40,5 @@ export interface SnippetOperations {
 
   modifyLintingRule(newRules: Rule[]): Promise<Rule[]>
 
-  runAllTests(id: string): Promise<{ passed: number, failed: number }>;
+  runAllTests(snippetId: string): Promise<Map<string, string[]>>
 }

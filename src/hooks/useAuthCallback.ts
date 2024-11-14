@@ -14,7 +14,6 @@ const useAuthCallback = () => {
             try {
                 const user = await fetchCreateUser(email);
                 if (user) {
-                    // console.log("getting default rules with token:" + token)
                     await fetchGetDefaultRules();
                     navigate("/");
                 }
